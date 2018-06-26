@@ -1,0 +1,110 @@
+﻿.formTitle
+{
+    color: #757575;
+    font-family: 华文中宋,微软雅黑,黑体;
+    font-size: 1.8em;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    margin: 0;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: 100%;
+    word-break: keep-all;
+}
+.formContent
+{
+    line-height: 1.2em;
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: center;
+    width: 790px;
+}
+.inputTable
+{
+    background-color: #F4F5F7;
+    border-collapse: collapse;
+    border-top: medium none;
+    margin-top: 10px;
+    width: 100%;
+    font-size: 12px;
+}
+.inputTable tr
+{
+    height: 35px;
+}
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+.inputTable thead th
+{
+    background: url("../img/bg5th.jpg") repeat scroll 0 0 #FFFFFF;
+    border-color: #B9CBD9;
+    border-left: 1px solid #B9CBD9;
+    border-style: solid;
+    border-width: 1px;
+    color: #4980A9;
+    line-height: 33px;
+    padding-left: 10px;
+    text-align: left;
+}
+.inputTable tbody tr th:first-child
+{
+    border-left: 1px solid #D8D8D8;
+}
+.inputTable tbody th
+{
+    color: #333333;
+    font-weight: normal;
+    line-height: 26px;
+    text-align: right;
+}
+.inputTable > tbody > tr > td, .inputTable > tbody > tr > th
+{
+    border-bottom: 1px solid #D8D8D8;
+    border-right: 1px solid #D8D8D8;
+}
+.inputTable th
+{
+    border-collapse: collapse;
+}
+.inputTable td, .inputTable th
+{
+    border-collapse: collapse;
+}
+.inputTable td
+{
+    background-color: #FFFFFF;
+    border-collapse: collapse;
+    padding: 4px;
+    text-align: left;
+}
+.inputTable input
+{
+    padding: 0 2px 2px 3px;
+    vertical-align: middle;
+}
+.inputTable1
+{
+    background-color: #F4F5F7;
+    border-collapse: collapse;
+    border-top: medium none;
+    margin-top: 10px;
+    width: 100%;
+}
+.inputTable1 thead th
+{
+    background: url("../img/bg5th.jpg") repeat scroll 0 0 #FFFFFF;
+    border-color: #B9CBD9;
+    border-left: 1px solid #B9CBD9;
+    border-style: solid;
+    border-width: 1px;
+    color: #4980A9;
+    line-height: 33px;
+    padding-left: 10px;
+    text-align: left;
+}

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quygt.dkcs.dao.SysDictionaryDao">
+
+    <insert id="insert" parameterType="SysDictionary" useGeneratedKeys="true" keyProperty="id">
+        <![CDATA[
+        INSERT INTO fdcs_sys_dictionary
+        (
+        dicName,
+        dicPath,
+        url,
+        orderIndex,
+        intro,
+        createTime)
+        VALUES
+        (
+        #{dicName},
+        #{dicPath},
+        #{url},
+        #{orderIndex},
+        #{intro},
+        #{createTime}
+        )
+        ]]>
+    </insert>
+
+    <delete id="delete"> DELETE FROM fdcs_sys_dictionary WHERE id=#{id} </delete>
+
+    <update id="update" parameterType="SysDictionary">
+        UPDATE fdcs_sys_dictionary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dicName!= null ">dicName=#{dicName},</if>
+            <if test="dicPath!= null ">dicPath=#{dicPath},</if>
+            <if test="url!= null ">url=#{url},</if>
+            <if test="orderIndex>=0 ">orderIndex=#{orderIndex},</if>
+            <if test="intro!=null">intro=#{intro},</if>
+        </trim>
+        WHERE id=#{id} ;
+    </update>
+
+    <select id="getmodel" resultType="SysDictionary">
+        SELECT * FROM fdcs_sys_dictionary
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="dicName!= null">AND dicName=#{dicName}</if>
+            <if test="dicPath!= null">AND dicPath=#{dicPath}</if>
+        </trim>
+        limit 0,1
+    </select>
+
+    <select id="getlist" resultType="SysDictionary" >
+        SELECT * FROM fdcs_sys_dictionary
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="dicName!= null">AND dicName=#{dicName}</if>
+            <if test="dicPath!= null">AND dicPath=#{dicPath}</if>
+        </trim>
+    </select>
+
+    <select id="getmax" resultType="String">
+        SELECT MAX(dicPath) FROM fdcs_sys_dictionary WHERE LENGTH(dicPath)=#{orderIndex} AND dicPath like CONCAT('%',#{dicPath},'%')
+    </select>
+
+    <select id="gettreelist" resultType="SysDictionary">
+        SELECT id,dicName,dicPath,orderIndex,substring(dicPath,1,LENGTH(DicPath)-3) as path FROM fdcs_sys_dictionary
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="dicName!= null">AND dicName=#{dicName}</if>
+            <if test="dicPath!= null">AND dicPath=#{dicPath}</if>
+        </trim>
+    </select>
+
+</mapper>

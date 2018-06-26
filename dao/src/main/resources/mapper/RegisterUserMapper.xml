@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quygt.dkcs.dao.RegisterUserDao">
+    <insert id="insert" parameterType="RegisterUser" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fdcs_register_user(mobile,agentKey,createTime)
+        VALUES (#{mobile},#{agentKey},#{createTime})
+    </insert>
+
+    <select id="getmodel" resultType="RegisterUser">
+        SELECT * FROM fdcs_register_user
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="mobile!= null and mobile!=''">AND mobile=#{mobile}</if>
+            <if test="agentKey!= null and agentKey!=''">AND agentKey=#{agentKey}</if>
+            <if test="createTime!=null">AND createTime=#{createTime}</if>
+        </trim>
+        limit 0,1
+    </select>
+</mapper>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>融e宝</title>
+    <meta name="keywords" content="贷款超市、借款、信用贷、手机贷、金融资讯"/>
+    <meta name="description" content="融e宝专业的贷款超市平台，纯线上信用贷款，为广大需要小额资金的用户解决资金困难，缺钱就找融e宝！"/>
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport" content="width=device-width,maximum-scale=1,minimum-scale=1,initial-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./frozenui/css/frozen.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <link rel="stylesheet" href="./css/dialog.css">
+    <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <div id="banner" class="ui-slider slide">
+        <ul class="ui-slider-content">
+            <li>
+                <img src="./img/banner1.png" alt="">
+            </li>
+            <li>
+                <img src="./img/banner1.png" alt="">
+            </li>
+            <li>
+                <img src="./img/banner1.png" alt="">
+            </li>
+            <li>
+                <img src="./img/banner1.png" alt="">
+            </li>
+        </ul>
+        <div class="dot">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <div id="tab_wrap">
+        <div class="ui-tab">
+            <ul id="tab_wrap_top" class="ui-tab-nav ui-border-b">
+                <li data-id="0" class="current">热门推荐</li>
+                <li data-id="1">极速贷</li>
+                <li data-id="2">工薪贷</li>
+                <li data-id="3">白领贷</li>
+            </ul>
+            <ul id="tab_wrap_content" class="ui-tab-content" style="width:300%">
+                <li>
+                    <ul class="ui-grid-halve">
+                    </ul>
+                </li>
+                <li>
+                    <ul class="ui-grid-halve">
+                    </ul>
+                </li>
+                <li>
+                    <ul class="ui-grid-halve">
+                    </ul>
+                </li>
+                <li>
+                    <ul class="ui-grid-halve">
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="module" style="display: none;">
+        <div class="module-box">
+            <span class="close"></span>
+            <div class="code-box">
+                <div class="row">
+                    <p>用户登录</p>
+                </div>
+                <div class="row">
+                    <input type="number" id="mobile" placeholder="手机号码" maxlength="11"/>
+                </div>
+                <div class="row">
+                    <input type="number" id="code" placeholder="验证码" maxlength="4" style="width: 60%;"/>
+                    <button href="javascript:void(0)" class="btn-refresh">获取验证码</button>
+                </div>
+                <div class="row">
+                    <button href="javascript:void(0)" class="btn-confirm">登录</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./frozenui/lib/zepto.min.js"></script>
+<script src="./frozenui/js/frozen.js"></script>
+<script src="./frozenui/lib/swipeSlide.min.js"></script>
+<script src="./js/dialog.js"></script>
+<script src="./js/common.js"></script>
+<script>
+    $(function () {
+        var tabChange = new fz.Scroll('.ui-tab', {
+            role: 'tab',
+            disablePointer: true
+        });
+        tabChange.on('beforeScrollStart', function (from, to) {
+            // from 为当前页，to 为下一页
+        });
+        //轮播图加载
+        $.post('/info/getbanner', function (response) {
+            var resultJson = eval('(' + response + ')');
+            var list = resultJson.data.data;
+            if (list == null || list.length == 0) {
+                $("#banner").hide();
+            } else {
+                $("#banner ul").empty();
+                $("#banner .dot").empty();
+                var htmlStr = "";
+                var htmlStr1 = "";
+                for (var i = 0; i < list.length; i++) {
+                    htmlStr += '<li><img src="http://fdcsapi1.fengyjf.com' + list[i].picUrl + '" linkUrl="' + list[i].linkUrl + '"  alt=""></li>';
+                    htmlStr1 += '<span></span>';
+                }
+                $("#banner ul").html(htmlStr);
+                $("#banner .dot").html(htmlStr1);
+                $("#banner ul").find("img").error(function () {
+                    $(this).attr("src", "./img/banner1.png");
+                });
+                //图片点击跳转事件
+                $('#banner ul li img').on("click", function () {//只有http开头的才会跳转
+                    var linkUrl = $(this).attr("linkUrl");
+                    if (linkUrl.length > 4 && linkUrl.substring(0, 4) == "http") {
+                        location.href = linkUrl;
+                    }
+                })
+                //banner组件
+                $('#banner').swipeSlide({
+                    continuousScroll: true,
+                    speed: 3000,
+                    transitionType: 'cubic-bezier(0.22, 0.69, 0.72, 0.88)',
+                    firstCallback: function (i, sum, me) {
+                        me.find('.dot').children().first().addClass('cur');
+                    },
+                    callback: function (i, sum, me) {
+                        me.find('.dot').children().eq(i).addClass('cur').siblings().removeClass('cur');
+                    }
+                })
+            }
+        });
+
+        //默认供应商列表加载
+        var dataJson = {
+            supplyType: 0,
+            currPage: 1,
+            pageSize: 1000
+        };
+        supply(dataJson);
+
+        //选项卡点击事件
+        tabChange.on('scrollEnd', function (curPage) {
+            var dataJson = {
+                supplyType: curPage,
+                currPage: 1,
+                pageSize: 1000
+            };
+            supply(dataJson);
+        });
+
+        // $('#banner').on('click',function(){
+        //     // if(localStorage.getItem('USER_LOGIN_TOKEN')) {
+        //         var linkUrl = $('#banner ul li img').attr("linkUrl");
+        //         if (linkUrl.length > 4 && linkUrl.substring(0, 4) == "http") {
+        //             location.href = linkUrl;
+        //         }
+        //     // }else{
+        //     //     showLogin();
+        //     // }
+        // })
+
+        $('.close').on('click', function () {
+            $('.module').hide();
+        })
+
+        $('.btn-refresh').on('click', function () {
+            var btnGetNo = $(this),
+                mobile = $('#mobile').val();
+            if (!mobile) {
+                alert('请输入手机号');
+                return false;
+            }
+            $.post('/hfive/account/getCode', {mobile: mobile}, function (res) {
+                var res = eval('(' + res + ')');
+                if (res.code == 1) {
+                    //验证码赋值给全局变量
+                    localStorage.setItem('PHONE_ID_CODE', res.data.code)
+                    btnGetNo.attr("disabled", true);
+                    var countDownNo = 60,
+                        timer = setInterval(countDown, 1000);
+
+                    //倒计时
+                    function countDown() {
+                        countDownNo--;
+                        btnGetNo.text("再次获取(" + countDownNo + ")");
+                        if (countDownNo === 0) {
+                            btnGetNo.removeAttr("disabled");
+                            btnGetNo.text("获取验证码");
+                            clearInterval(timer);
+                            countDownNo = 60;
+                        }
+                    }
+                } else {
+                    alert(res.message);
+                }
+            })
+        })
+
+        $('.btn-confirm').on('click', function () {
+            var mobile = $('#mobile').val();
+            if (!mobile) {
+                alert('请输入手机号');
+                return false;
+            }
+            var code = $('#code').val();
+            if (!code) {
+                alert('请输入验证码');
+                return false;
+            }
+            if (code == localStorage.getItem('PHONE_ID_CODE')) {
+                $.post('/hfive/account/login', {mobile: mobile}, function (res) {
+                    var res = eval('(' + res + ')');
+                    if (res.code == 1) {
+                        localStorage.setItem('USER_LOGIN_TOKEN', res.data.token)
+                        localStorage.setItem('USER_ID', res.data.user.id)
+                        $('.module').hide();
+                    } else {
+                        alert(res.message);
+                    }
+
+                })
+            } else {
+                alert('动态密码错误请重新输入');
+            }
+        })
+    });
+
+    //供应商列表查询
+    function supply(dataJson) {
+        if (dataJson.supplyType == 0) {
+            dataJson.recommend = 1;
+        } else {
+            dataJson.recommend = 0;
+        }
+        //供应商列表查询
+        $.post('/hfive/supply/getSupplyList', dataJson, function (response) {
+            var resultJson = eval('(' + response + ')');
+            var list = resultJson.data.data.data;
+            var htmlStr = "";
+            for (var i = 0; i < list.length; i++) {
+                htmlStr += '<li linkUrl="' + list[i].linkUrl + '" supplyId="' + list[i].id + '"><div class="ui-flex ui-flex-pack-start">'
+                    + '<div><img src="http://fdcsapi1.fengyjf.com' + list[i].logo + '" alt="app_logo"></div>'
+                    + '<div class="ui-row-flex ui-whitespace ui-row-flex-ver">'
+                    + '<div class="ui-col app_name">' + list[i].supplyName + '</div>'
+                    + '<div class="ui-col app_user_count"><span class="hits">' + list[i].hits + '</span><span>人成功下款</span></div>'
+                    + '</div></div><div class="app_name_footer">' + list[i].intro + '</div></li>';
+            }
+            $(".ui-grid-halve").eq(dataJson.supplyType).html(htmlStr);
+            if (htmlStr == '') {
+                $(".ui-grid-halve").eq(dataJson.supplyType).css({})
+            }
+            $(".ui-grid-halve").find("img").error(function () {
+                $(this).attr("src", "./img/logo.png");
+            });
+
+            //供应商url点击跳转事件
+            $('.ui-grid-halve li').on("click", function () {
+                var linkUrl = $(this).attr("linkUrl");
+                var supplyId = $(this).attr("supplyId");
+                if (linkUrl.length > 4 && linkUrl.substring(0, 4) == "http") {//只有http开头的才会跳转
+                    addHits(supplyId, linkUrl);//点击量自增1
+                }
+            });
+        });
+    }
+
+    //供应商列表点击量自增1
+    function addHits(supplyId, linkUrl) {
+        // if(!localStorage.getItem('USER_LOGIN_TOKEN')) {
+        //     showLogin();
+        // }else {
+        console.log(supplyId);
+        console.log(linkUrl);
+        var uuid = localStorage.getItem('REB_UUID');
+        if (!uuid) {
+            uuid = guid();
+            localStorage.setItem('REB_UUID', uuid);
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/html/supplyLog/addSupplyLog',
+            // headers: {
+            //     token: localStorage.getItem('USER_LOGIN_TOKEN')
+            // },
+            data: {
+                supplyId: supplyId,
+                uid: uuid,
+                specificSource:getQueryString("specificSource")
+            },
+            success: function (res) {
+                var hitsStr = $("li[supplyId='" + supplyId + "']").find(".hits").eq(0).html();
+                var hits = 0;
+                if (hitsStr != null && hitsStr != "") {
+                    hits = parseInt(hitsStr);
+                }
+                $("li[supplyId='" + supplyId + "']").find(".hits").eq(0).html(hits + 1);
+                location.href = linkUrl;
+            },
+            error: function (xhr, type) {
+                alert('请求失败')
+            }
+        })
+        // }
+    }
+
+    function showLogin() {
+        $('.module').show();
+    }
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+</script>
+</body>
+</html>

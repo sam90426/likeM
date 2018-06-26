@@ -1,0 +1,47 @@
+html,body{
+    width: 100%;
+    height: 100%;
+}
+body, h1, h2, h3, h4, h5, h6, hr, p, blockquote, dl, dt, dd, ul, ol, li, pre, form, fieldset, legend, button, input, textarea, th, td {
+    margin: 0;
+    padding: 0;
+}
+body {
+    background: #fff;
+    color: #333;
+    font-family: "SimSun", "宋体", "Arial Narrow";
+}
+ul, ol {
+    list-style-type: none;
+}
+em {
+    font-style: normal
+}
+p {
+    word-wrap: break-word
+}
+img {
+    border: 0;
+    vertical-align: middle
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0
+}
+a {
+    text-decoration: none;
+}
+a:link, a:visited {
+    color: #009;
+    text-decoration: none;
+}
+a:hover, a:active, a:focus {
+    color: #c00;
+    text-decoration: none;
+}
+input:focus {
+    outline: none;
+}
+button{
+    outline:none;
+}

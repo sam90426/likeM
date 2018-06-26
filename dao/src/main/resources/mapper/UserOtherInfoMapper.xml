@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quygt.dkcs.dao.UserOtherInfoDao">
+
+    <sql id="base_column_list">
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="userId!= null">AND userId=#{userId}</if>
+            <if test="invitationCode!= null">AND invitationCode=#{invitationCode}</if>
+            <if test="isApp!= null">AND `isApp`=#{isApp}</if>
+            <if test="alipayAccount!= null and alipayAccount!=''">AND alipayAccount=#{alipayAccount}</if>
+            <if test="alipayName!= null and alipayName!=''">AND alipayName=#{alipayName}</if>
+            <if test="startTime!=null and startTime!=''">
+                AND createTime &gt;= concat(#{startTime}," 00:00:00")
+            </if>
+            <if test="endTime!=null and endTime !=''">
+                AND createTime &lt;= concat(#{endTime}," 23:59:59")
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="insert" parameterType="UserOtherInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into fdcs_user_other_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                userId,
+            </if>
+            <if test="invitationCode != null">
+                invitationCode,
+            </if>
+            <if test="isApp != null">
+                isApp,
+            </if>
+            <if test="alipayAccount != null">
+                alipayAccount,
+            </if>
+            <if test="alipayName != null">
+                alipayName,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId},
+            </if>
+            <if test="invitationCode != null">
+                #{invitationCode,jdbcType=VARCHAR},
+            </if>
+            <if test="isApp != null">
+                #{isApp},
+            </if>
+            <if test="alipayAccount != null">
+                #{alipayAccount},
+            </if>
+            <if test="alipayName != null">
+                #{alipayName},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="UserOtherInfo">
+        UPDATE fdcs_user_other_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId!= null">userId=#{userId},</if>
+            <if test="invitationCode!= null">invitationCode=#{invitationCode},</if>
+            <if test="isApp!= null">isApp=#{isApp},</if>
+            <if test="alipayAccount!= null">alipayAccount=#{alipayAccount},</if>
+            <if test="alipayName!= null">alipayName=#{alipayName},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <select id="getlist" resultType="UserOtherInfo">
+        SELECT * FROM fdcs_user_other_info
+        <include refid="base_column_list"/>
+        ORDER BY id DESC
+    </select>
+
+    <select id="getmodel" resultType="UserOtherInfo">
+        SELECT * FROM fdcs_user_other_info
+        <include refid="base_column_list"/>
+        limit 0,1
+    </select>
+    <select id="getByUserId" resultType="UserOtherInfo" parameterType="java.lang.Long">
+        SELECT * FROM fdcs_user_other_info
+          WHERE userId=#{userId}
+        limit 0,1
+    </select>
+</mapper>

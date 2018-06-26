@@ -1,0 +1,189 @@
+.wrap {
+    width: 10.0rem;
+    height: 100%;
+    margin: 0 auto;
+}
+
+.wrap .container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    min-height: 100%;
+    top: 0;
+    left: 0;
+    background-color: #fb2d5c;
+}
+
+.wrap .container .header img{
+    width: 100%;
+    height: 5.266667rem;
+    position: relative;
+}
+
+.wrap .container .content{
+    position: relative;
+    padding-left: .533333rem;
+    padding-right: .533333rem;
+}
+
+.wrap .container .content .info-box{
+    position: relative;
+    width: 100%;
+    border-radius: .133333rem;
+    background-color: #fff;
+    margin-top: -.666667rem;
+    padding-bottom: 0.6rem;
+}
+
+.wrap .container .content .info-box .form-box{
+    padding-left: .6rem;
+    padding-right: .6rem;
+}
+
+.wrap .container .content .info-box .form-box .form-item{
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.wrap .container .content .info-box .form-box .form-item input{
+    border: .013333rem solid #dedede;
+    width: 6.906667rem;
+    height: .866667rem;
+    margin-bottom: .32rem;
+    font-size: .346667rem;
+    padding-left: .8rem;
+    color: #b6b6b6;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow:0px 0px 0px #000; 
+    -webkit-appearance:none;
+}
+
+.wrap .container .content .info-box .form-box .form-item:first-child input{
+    margin-top: .96rem;
+}
+
+.wrap .container .content .info-box .form-box .form-item .btn-get-code{
+    width: 2.133333rem;
+    height: .866667rem;
+    background-color: #fb2d5c;
+    font-size: .293333rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: .013333rem solid #fb2d5c;
+    color: #fff;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.wrap .container .content .info-box .form-box .form-item .btn-confirm{
+    margin-top: .32rem;
+    margin-left: .986667rem;
+    width: 5.733333rem;
+    height: .84rem;
+    background-color: #fb2d5c;
+    border: .013333rem solid #fb2d5c;
+    color: #fff;
+    font-size: .4rem;
+    border-radius: 0.42rem;
+    -webkit-tap-highlight-color: transparent;
+}
+.wrap .container .content .info-box .form-box .form-item .btn-confirm.download{
+    background-color: #ffc435;
+    color: #551414;
+    border-color: #ffc435;
+}
+
+.wrap .container .content .product-box{
+    position: relative;
+    width: 100%;
+    height: 4.2rem;
+    border-radius: .133333rem;
+    background-color: #fff;
+    margin-top: .266667rem;
+    margin-bottom: .266667rem;
+}
+
+.wrap .container .content .product-box .title{
+    font-size: .346667rem;
+    color: #000;
+    padding-top: .506667rem;
+    padding-left: .306667rem;
+    padding-right: .306667rem;
+    font-weight: bold;
+}
+
+.wrap .container .content .product-box .title span{
+    margin-left: .506667rem;
+}
+
+.wrap .container .content .product-box .title span::before{
+    content: ' ';
+    width: .346667rem;
+    height: .346667rem;
+    background: url(../../h5/img/zan.jpg) no-repeat 0 0;
+    position: absolute;
+    left: .306667rem;
+    top: .506667rem;
+    background-size: .346667rem .346667rem;
+}
+
+.wrap .container .content .product-box .product-content{
+    display: table;
+    width: 100%;
+}
+
+.wrap .container .content .product-box .product-content .cell{
+    display: table-cell;
+    padding-left: .506667rem;
+    padding-right: .506667rem;
+    padding-top: .586667rem;
+    width: 33.3%;
+    position: relative;
+}
+
+.wrap .container .content .product-box .product-content .cell::after{
+    content: ' ';
+    width: .04rem;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 20%;
+    background-color: #fff;
+    background: url(../../h5/img/split.png) no-repeat 0 0;
+    background-size: .04rem 80%;
+}
+
+.wrap .container .content .product-box .product-content .cell:last-child:after{
+    width: 0;
+    height: 0;
+}
+
+.wrap .container .content .product-box .product-content .cell span{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    font-size: .32rem;
+    line-height: 1.5;
+}
+
+.wrap .container .content .product-box .product-content .cell span:first-child{
+    font-size: .346667rem;
+    color: #ef4646;
+    margin-bottom: .186667rem;
+    font-weight: bold;
+}
+
+#invitationCode{
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently
+not supported by any browser */
+}
+#invitationCode::selection {
+    background:transparent;
+    color:#b6b6b6;
+}

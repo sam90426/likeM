@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quygt.dkcs.dao.UserInviteDao">
+
+    <sql id="base_column_list">
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="id>0">AND id=#{id}</if>
+            <if test="inviteTime!= null">AND inviteTime=#{inviteTime}</if>
+            <if test="inviteId!= null">AND `inviteId`=#{inviteId}</if>
+            <if test="inviteName!= null and inviteName!=''">AND inviteName=#{inviteName}</if>
+            <if test="userId!= null">AND userId=#{userId}</if>
+            <if test="userName!= null and userName!=''">AND userName=#{userName}</if>
+            <if test="bounty!=null">AND bounty=#{bounty}</if>
+            <if test="withdrawalsState!=null">AND withdrawalsState=#{withdrawalsState}</if>
+            <if test="startTime!=null and startTime!=''">
+                AND createTime &gt;= concat(#{startTime}," 00:00:00")
+            </if>
+            <if test="endTime!=null and endTime !=''">
+                AND createTime &lt;= concat(#{endTime}," 23:59:59")</if>
+        </trim>
+    </sql>
+
+    <insert id="insert" parameterType="UserInvite" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fdcs_user_invite
+        (
+            inviteTime,
+            `inviteId`,
+            inviteName,
+            userId,
+            userName,
+            bounty,
+            withdrawalsState
+        ) VALUES (
+            #{inviteTime},
+            #{inviteId},
+            #{inviteName},
+            #{userId},
+            #{userName},
+            #{bounty},
+            #{withdrawalsState}
+
+        )
+    </insert>
+
+    <update id="update" parameterType="UserInvite">
+        UPDATE fdcs_user_invite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="inviteTime!= null">inviteTime=#{inviteTime},</if>
+            <if test="inviteId!= null">inviteId=#{inviteId},</if>
+            <if test="inviteName!= null">inviteName=#{inviteName},</if>
+            <if test="userId!= null">userId=#{userId},</if>
+            <if test="userName!= null">userName=#{userName},</if>
+            <if test="bounty!= null">bounty=#{bounty},</if>
+            <if test="withdrawalsState!= null">withdrawalsState=#{withdrawalsState},</if>
+        </trim>
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateState">
+        UPDATE fdcs_user_invite fui
+        LEFT JOIN fdcs_user_other_info fuoi ON fui.inviteId=fuoi.userId
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="us.userName!= null">fui.userName=#{us.userName},</if>
+            <if test="us.withdrawalsState!= null">fui.withdrawalsState=#{us.withdrawalsState},</if>
+        </trim>
+        <trim prefix="WHERE" prefixOverrides="AND">
+            fuoi.isApp=1
+            AND fui.userId=#{co.userId}
+            AND fui.withdrawalsState IN
+            <foreach item="item" index="index" collection="co.states" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </trim>
+    </update>
+
+    <select id="getlist" resultType="UserInvite">
+        SELECT * FROM fdcs_user_invite
+        <include refid="base_column_list" />
+        ORDER BY id DESC
+    </select>
+
+    <select id="getmodel" resultType="UserInvite">
+        SELECT * FROM fdcs_user_invite
+        <include refid="base_column_list" />
+        limit 0,1
+    </select>
+
+    <select id="selectSumBountyByUserId" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT SUM(fui.bounty) FROM fdcs_user_invite fui
+        LEFT JOIN fdcs_user_other_info fuoi ON fui.inviteId=fuoi.userId
+        WHERE fui.userId=#{userId} AND fui.withdrawalsState IN (0,3) AND fuoi.isApp=1
+    </select>
+
+    <select id="selectSumBountyAll" resultType="java.math.BigDecimal" parameterType="java.lang.Long">
+        SELECT SUM(bounty) FROM fdcs_user_invite
+        WHERE userId=#{userId} AND withdrawalsState IN(0,1,3)
+    </select>
+    <select id="selectSumBountyGroupState" resultType="java.util.Map" parameterType="java.lang.Long">
+        SELECT SUM(bounty) AS bounty,withdrawalsState FROM fdcs_user_invite
+        WHERE userId=#{userId}
+        GROUP BY withdrawalsState
+    </select>
+
+    <select id="selectListAll" resultType="UserInvite" parameterType="UserInvite">
+        SELECT fui.*,fuoi.isApp FROM fdcs_user_invite fui
+        LEFT JOIN fdcs_user_other_info fuoi ON fui.inviteId=fuoi.userId
+        WHERE fui.userId=#{ui.userId}
+        <if test="type!=null and type!='numAll'">
+            <if test="type=='numNo'">
+                AND fui.withdrawalsState IN (0,3)
+                and fuoi.isApp=0 or fuoi.isApp is null
+            </if>
+            <if test="type=='numOk'">
+                AND fui.withdrawalsState IN (0,3)
+                and fuoi.isApp=1
+            </if>
+        </if>
+        ORDER BY fui.inviteTime DESC
+    </select>
+
+    <update id="updateByIds">
+        UPDATE fdcs_user_invite
+        SET
+        <if test="t.withdrawalsState != null">
+            withdrawalsState = #{t.withdrawalsState}
+        </if>
+        WHERE id
+        IN
+        <trim suffix=")" prefix="(" suffixOverrides=",">
+            <foreach collection="ids" item="item">
+                #{item},
+            </foreach>
+        </trim>
+    </update>
+
+    <update id="updateByUserInvite">
+        UPDATE fdcs_user_invite
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="i.inviteTime!= null">inviteTime=#{i.inviteTime},</if>
+            <if test="i.inviteId!= null">inviteId=#{i.inviteId},</if>
+            <if test="i.inviteName!= null">inviteName=#{i.inviteName},</if>
+            <if test="i.userId!= null">userId=#{i.userId},</if>
+            <if test="i.userName!= null">userName=#{i.userName},</if>
+            <if test="i.bounty!= null">bounty=#{i.bounty},</if>
+            <if test="i.withdrawalsState!= null">withdrawalsState=#{i.withdrawalsState},</if>
+        </trim>
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="u.id>0">AND id=#{u.id}</if>
+            <if test="u.inviteTime!= null">AND inviteTime=#{u.inviteTime}</if>
+            <if test="u.inviteId!= null">AND `inviteId`=#{u.inviteId}</if>
+            <if test="u.inviteName!= null and u.inviteName!=''">AND inviteName=#{u.inviteName}</if>
+            <if test="u.userId!= null">AND userId=#{u.userId}</if>
+            <if test="u.userName!= null and u.userName!=''">AND userName=#{u.userName}</if>
+            <if test="u.bounty!=null">AND bounty=#{u.bounty}</if>
+            <if test="u.withdrawalsState!=null">AND withdrawalsState=#{u.withdrawalsState}</if>
+            <if test="u.startTime!=null and u.startTime!=''">
+                AND createTime &gt;= concat(#{u.startTime}," 00:00:00")
+            </if>
+            <if test="u.endTime!=null and u.endTime !=''">
+                AND createTime &lt;= concat(#{u.endTime}," 23:59:59")</if>
+        </trim>
+    </update>
+
+
+    <select id="selectCountByUserId" resultType="java.lang.Integer" >
+        SELECT count(1) FROM fdcs_user_invite fui
+        LEFT JOIN fdcs_user_other_info fuoi ON fui.inviteId=fuoi.userId
+        WHERE fui.userId=#{userId} AND fui.withdrawalsState IN (0,3) AND fuoi.isApp=#{isApp}
+    </select>
+
+    <select id="selectCountAll" parameterType="java.lang.Long" resultType="java.util.Map">
+        SELECT count(fui.id) AS `count`,fuoi.isApp AS type FROM fdcs_user_invite fui
+        LEFT JOIN fdcs_user_other_info fuoi ON fui.inviteId=fuoi.userId
+        WHERE fui.userId=#{userId} AND fui.withdrawalsState IN (0,3)
+        GROUP BY fuoi.isApp
+        UNION ALL
+        SELECT COUNT(id) AS `count`,2 AS type FROM fdcs_user_invite WHERE userId=#{userId}
+    </select>
+</mapper>

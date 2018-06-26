@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.quygt.dkcs.dao.SupplyLogDao">
+    <insert id="insert" parameterType="SupplyLog" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO fdcs_supply_log
+        (
+        userId,userName,realName,supplyId,supplyName,source,
+        <if test="specificSource!=null">
+            specificSource,
+        </if>
+        createTime
+        )
+        VALUES
+        (
+        #{userId},#{userName},#{realName},#{supplyId},#{supplyName},#{source},
+        <if test="specificSource!=null">
+            #{specificSource},
+        </if>
+        #{createTime}
+        )
+    </insert>
+
+    <select id="getlist" resultType="SupplyLog">
+        SELECT * FROM fdcs_supply_log
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="userId>0 ">AND userId=#{userId}</if>
+            <if test="userName!= null ">AND userName=#{userName}</if>
+            <if test="realName!= null ">AND realName=#{realName}</if>
+            <if test="supplyId>0 ">AND supplyId=#{supplyId}</if>
+            <if test="supplyName!= null ">AND supplyName=#{supplyName}</if>
+            <if test="source>0 ">AND source=#{source}</if>
+            <if test="specificSource!=null and specificSource>0">
+                AND specificSource=#{specificSource}
+            </if>
+            <if test="createTime!=null ">AND createTime=#{createTime}</if>
+            <if test="startTime!=null and startTime!=''">
+                AND createTime &gt;= concat(#{startTime}," 00:00:00")
+            </if>
+            <if test="endTime!=null and endTime !=''">
+                AND createTime &lt;= concat(#{endTime}," 23:59:59")
+            </if>
+        </trim>
+        ORDER BY id DESC
+    </select>
+
+    <select id="getmodel" resultType="SupplyLog">
+        SELECT * FROM fdcs_supply_log
+        <trim prefix="WHERE" prefixOverrides="AND">
+            1=1
+            <if test="userId>0 ">AND userId=#{userId}</if>
+            <if test="userName!= null ">AND userName=#{userName}</if>
+            <if test="realName!= null ">AND realName=#{realName}</if>
+            <if test="supplyId>0 ">AND supplyId=#{supplyId}</if>
+            <if test="supplyName!= null ">AND supplyName=#{supplyName}</if>
+            <if test="source>0 ">AND source=#{source}</if>
+            <if test="specificSource!=null">
+                AND specificSource=#{specificSource}
+            </if>
+            <if test="createTime!=null ">AND createTime=#{createTime}</if>
+        </trim>
+        ORDER BY id DESC limit 0,1
+    </select>
+
+    <select id="selectChannelChartData" resultType="ChannelChartVO">
+        SELECT
+            COUNT(id) AS count,
+            DATE(createTime) AS time,
+            supplyName
+        FROM
+            fdcs_supply_log
+        WHERE
+            (
+                createTime BETWEEN #{startTime}
+                AND DATE_ADD(#{endTime}, INTERVAL 1 DAY)
+            )
+        GROUP BY
+            time,
+            supplyId;
+    </select>
+
+    <select id="selectSourceChartData" resultType="SourceChartVO">
+        SELECT
+            a.count,
+            a.time,
+            b.sourceName
+        FROM
+            (
+                SELECT
+                    count(DISTINCT userName) AS count,
+                    DATE(createTime) AS time,
+                    specificSource
+                FROM
+                    fdcs_supply_log
+                WHERE
+                    (
+                        createTime BETWEEN #{startTime}
+                        AND DATE_ADD(#{endTime}, INTERVAL 1 DAY)
+                    )
+                    AND specificSource IS NOT NULL
+                GROUP BY
+                    specificSource,time
+            ) a
+            JOIN (
+                     SELECT
+                         string1 AS sourceName,
+                         zs1
+                     FROM
+                         fdcs_sys_dictionary_content
+                     WHERE
+                         dicPath = #{dicPath}
+                 ) b ON b.zs1 = a.specificSource
+    </select>
+</mapper>
