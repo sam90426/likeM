@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 @Repository
-public interface BaseDao<T> {
+public interface BaseMapper<T,ID extends Serializable> {
 
     /**
      * 条数

@@ -1,9 +1,6 @@
 package com.quygt.dkcsapi.filter;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.quygt.dkcs.model.User;
-import com.quygt.dkcs.service.UserService;
 import com.quygt.dkcs.utils.ConfigUtil;
 import com.quygt.dkcs.utils.DesUtil;
 import com.quygt.dkcs.utils.TokenUtil;
@@ -16,9 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class TokenFilter implements HandlerInterceptor {
-
-    @Resource
-    private UserService userService;
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
@@ -60,8 +54,8 @@ public class TokenFilter implements HandlerInterceptor {
             if (System.currentTimeMillis() > tokenUtil.getExpiredTime())
                 return AppContext.errorReturn(httpServletResponse, 3, "token已过期");
             //验证用户名和密码是否正确
-            User user = userService.getUserByAccount(tokenUtil.getUserName(), tokenUtil.getPassWord());
-            if (user == null)
+            //User user = userService.getUserByAccount(tokenUtil.getUserName(), tokenUtil.getPassWord());
+            /*if (user == null)
                 return AppContext.errorReturn(httpServletResponse, 2, "token验证失败");
             if (user.getState() != 1)
                 return AppContext.errorReturn(httpServletResponse, 2, "账号已停用");
@@ -69,7 +63,7 @@ public class TokenFilter implements HandlerInterceptor {
             if (user.getId() != uid)
                 return AppContext.errorReturn(httpServletResponse, 2, "非法操作");
             //写入request中在controller中调用
-            httpServletRequest.setAttribute("user", user);
+            httpServletRequest.setAttribute("user", user);*/
         } catch (JsonSyntaxException e) {
             return AppContext.errorReturn(httpServletResponse, -1, "token验证失败");
         }

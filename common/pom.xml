@@ -35,13 +35,6 @@
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>com.jianzhou.sdk</groupId>
-            <artifactId>jzsms</artifactId>
-            <version>6.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/jzsms-6.0.jar</systemPath>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
         <dependency>
             <groupId>org.apache.poi</groupId>

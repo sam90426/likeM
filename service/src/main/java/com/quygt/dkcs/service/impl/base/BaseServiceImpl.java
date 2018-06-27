@@ -1,8 +1,5 @@
 package com.quygt.dkcs.service.impl.base;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import com.quygt.dkcs.dao.base.BaseDao;
 import com.quygt.dkcs.service.base.BaseService;
 import com.quygt.dkcs.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,77 +7,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.Serializable;
 import java.util.List;
 
-public class BaseServiceImpl<M extends BaseDao<T>, T> implements BaseService<T> {
+public class BaseServiceImpl<T, ID extends Serializable> implements BaseService<T, ID> {
 
-    @Autowired
-    protected M baseMapper;
-
-    /**
-     * 条数
-     * @param record
-     * @return
-     */
-    public Integer selectCount(T record){
-        return baseMapper.selectCount(record);
+    @Override
+    public Integer selectCount(T record) {
+        return null;
     }
 
+    @Override
     public boolean insert(T record) {
-        return baseMapper.insert(record);
+        return false;
     }
 
-    public T getById(Serializable id) {
-        return baseMapper.getById(id);
-    }
-
+    @Override
     public boolean updateById(T record) {
-        return baseMapper.update(record);
+        return false;
     }
 
-    public boolean updateByIds(T record,Serializable [] ids) {
-        return baseMapper.updateByIds(record,ids);
+    @Override
+    public boolean updateByIds(T record, Serializable[] ids) {
+        return false;
     }
 
-    /**
-     * 根据实体删除
+    @Override
+    public T getById(Serializable id) {
+        return null;
+    }
 
-     *
-     * @param e
-     * @return
-     */
+    @Override
     public boolean delete(T e) {
-        return baseMapper.delete(e);
+        return false;
     }
 
-    /**
-     * 查询列表 分页
-     *
-     * @param e
-     * @param currPage
-     * @param pageSize
-     * @return
-     */
+    @Override
     public PageUtil<T> getPageList(T e, Integer currPage, Integer pageSize) {
-        currPage++;
-        Page<T> page = PageHelper.startPage(currPage, pageSize);
-        baseMapper.getlist(e);
-        return new PageUtil<T>(currPage, pageSize, page.getPages(), page.getTotal(), page.getResult());
+        return null;
     }
 
-    /**
-     * 查询列表 未分页
-     *
-     * @param e
-     * @return
-     */
+    @Override
     public List<T> getlist(T e) {
-        return baseMapper.getlist(e);
+        return null;
     }
 
-    public T getmodel(T e){
-        return baseMapper.getmodel(e);
+    @Override
+    public T getmodel(T e) {
+        return null;
     }
 
-    public boolean update(T e){
-        return baseMapper.update(e);
+    @Override
+    public boolean update(T e) {
+        return false;
     }
 }

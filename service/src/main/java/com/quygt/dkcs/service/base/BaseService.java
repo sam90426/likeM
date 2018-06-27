@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * 基类接口定义
  */
-public interface BaseService<T> {
+public interface BaseService<T, ID extends Serializable> {
 
     /**
      * 条数
