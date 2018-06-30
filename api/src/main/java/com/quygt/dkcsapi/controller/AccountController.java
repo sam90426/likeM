@@ -1,28 +1,70 @@
 package com.quygt.dkcsapi.controller;
 
+import com.quygt.dkcs.model.UserInfo;
+import com.quygt.dkcs.service.UserInfoService;
 import com.quygt.dkcsapi.common.ServletUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author Administrator
+ */
 @Controller
 @RequestMapping(value = "/account", produces = "text/plain;charset=UTF-8")
 public class AccountController extends BaseController {
 
-    //region 登陆
-    @RequestMapping(value = "/user/login",method = RequestMethod.POST)
-    public void login(@RequestParam(value = "mobile",required = true) String mobile,
-                      @RequestParam(value = "password",required = true)String password,
-                      HttpServletResponse response){
-        Map<String,Object> result=new HashMap<>();
+    @Resource
+    private UserInfoService userInfoService;
 
-        ServletUtils.writeToResponse(response,result);
+    //region 登陆
+
+    /**
+     * @param mobile
+     * @param password
+     * @param response
+     */
+    @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+    public void login(@RequestParam(value = "mobile", required = true) String mobile,
+                      @RequestParam(value = "password", required = true) String password,
+                      HttpServletResponse response)throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (mobile.isEmpty() || password.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "账号或密码不能为空");
+        } else {
+            UserInfo userInfo = userInfoService.findUserByLoginName(mobile);
+            if (userInfo == null) {
+                result.put("code", 400);
+                result.put("msg", "该账号未注册");
+            } else {
+                if (password.equals(userInfo.getPassword())) {
+                    result.put("code", 200);
+                    result.put("msg", "登陆成功");
+                    result.put("data", userInfo);
+                } else {
+                    result.put("code", 400);
+                    result.put("msg", "密码错误");
+                }
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
     }
     //endregion
+
+    //region 注册
+    public void Register()throws Exception{
+        Map<String,Object> result=new HashMap<>();
+
+
+
+    }    //endregion
 
 }
