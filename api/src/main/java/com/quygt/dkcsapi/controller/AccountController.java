@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class AccountController extends BaseController {
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
     public void login(@RequestParam(value = "mobile", required = true) String mobile,
                       @RequestParam(value = "password", required = true) String password,
-                      HttpServletResponse response)throws Exception {
+                      HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         if (mobile.isEmpty() || password.isEmpty()) {
             result.put("code", 400);
@@ -60,11 +61,91 @@ public class AccountController extends BaseController {
     //endregion
 
     //region 注册
-    public void Register()throws Exception{
-        Map<String,Object> result=new HashMap<>();
 
+    /**
+     * 注册
+     *
+     * @param mobile
+     * @param password
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/user/register", method = RequestMethod.POST)
+    public void register(@RequestParam(value = "mobile", required = true) String mobile,
+                         @RequestParam(value = "password", required = true) String password,
+                         HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (mobile.isEmpty() || password.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "账号或密码不能为空");
+        } else {
+            UserInfo userInfo = userInfoService.findUserByLoginName(mobile);
+            if (userInfo != null) {
+                result.put("code", 400);
+                result.put("msg", "该账号已存在");
+            } else {
+                userInfo = new UserInfo();
+                userInfo.setLoginName(mobile);
+                userInfo.setPassword(password);
+                userInfo.setUserName(mobile);
+                userInfo.setSign("赶快更新你的个性签名吧");
+                userInfo.setMobile(mobile);
+                userInfo.setSex(1);
+                userInfo.setState(1);
+                userInfo.setLevel(1);
+                userInfo.setExperience(0);
+                userInfo.setCreateTime(new Date());
+                boolean save = userInfoService.insert(userInfo);
+                if (save) {
+                    result.put("code", 200);
+                    result.put("msg", "注册成功");
+                } else {
+                    result.put("code", 400);
+                    result.put("msg", "注册失败");
+                }
+            }
+        }
 
-
+        ServletUtils.writeToResponse(response, result);
     }    //endregion
 
+    //region 找回密码
+
+    /**
+     * 找回密码
+     *
+     * @param mobile
+     * @param password
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/user/findpwd", method = RequestMethod.POST)
+    public void findPwd(@RequestParam(value = "mobile", required = true) String mobile,
+                        @RequestParam(value = "password", required = true) String password,
+                        HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (mobile.isEmpty() || password.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "账号或密码不能为空");
+        } else {
+            UserInfo userInfo = userInfoService.findUserByLoginName(mobile);
+            if (userInfo == null) {
+                result.put("code", 400);
+                result.put("msg", "该账号不存在");
+            } else {
+                userInfo.setPassword(password);
+                boolean save = userInfoService.updateById(userInfo);
+                if (save) {
+                    result.put("code", 200);
+                    result.put("msg", "找回成功");
+                } else {
+                    result.put("code", 400);
+                    result.put("msg", "找回失败");
+                }
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
 }
