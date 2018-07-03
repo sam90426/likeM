@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- like_article表:官方文章表模块 -->
+<mapper namespace="com.quygt.dkcs.dao.LikeArticleMapper">
+    <!--返回Map-->        
+    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.LikeArticle">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="INTEGER" />
+        <result column="logo" property="logo" jdbcType="VARCHAR" />
+        <result column="leave" property="leave" jdbcType="INTEGER" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR" />
+        <result column="zan_count" property="zanCount" jdbcType="INTEGER" />
+        <result column="comment_count" property="commentCount" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="state" property="state" jdbcType="INTEGER" />
+        <result column="hits" property="hits" jdbcType="INTEGER" />
+    </resultMap>
+    
+    <!--基本的sql查询字段 公共引用...-->
+    <sql id="Base_Column_List">
+        id,user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,create_time,title,state,hits 
+    </sql>
+    
+    <!-- 基本的sql查询条件公共引用 -->
+    <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test=" id != null and id != '' ">
+                id  = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null and userId != '' ">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="userName != null and userName != '' ">
+                and user_name = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="sex != null and sex != '' ">
+                and sex = #{sex,jdbcType=INTEGER}
+            </if>
+            <if test="logo != null and logo != '' ">
+                and logo = #{logo,jdbcType=VARCHAR}
+            </if>
+            <if test="leave != null and leave != '' ">
+                and leave = #{leave,jdbcType=INTEGER}
+            </if>
+            <if test="content != null and content != '' ">
+                and content = #{content,jdbcType=VARCHAR}
+            </if>
+            <if test="picUrl != null and picUrl != '' ">
+                and pic_url = #{picUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="zanCount != null and zanCount != '' ">
+                and zan_count = #{zanCount,jdbcType=INTEGER}
+            </if>
+            <if test="commentCount != null and commentCount != '' ">
+                and comment_count = #{commentCount,jdbcType=INTEGER}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="title != null and title != '' ">
+                and title = #{title,jdbcType=VARCHAR}
+            </if>
+            <if test="state != null and state != '' ">
+                and state = #{state,jdbcType=INTEGER}
+            </if>
+            <if test="hits != null and hits != '' ">
+                and hits = #{hits,jdbcType=INTEGER}
+            </if>
+        </trim>
+    </sql>
+    
+    
+    <insert id="save" parameterType="com.quygt.dkcs.model.LikeArticle">
+        insert into like_article(user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,create_time,title,state,hits)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{title,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{hits,jdbcType=INTEGER})
+    </insert>
+
+    
+    <update id="update" parameterType="com.quygt.dkcs.model.LikeArticle">
+        update like_article set 
+            user_id = #{userId,jdbcType=BIGINT},
+            user_name = #{userName,jdbcType=VARCHAR},
+            sex = #{sex,jdbcType=INTEGER},
+            logo = #{logo,jdbcType=VARCHAR},
+            leave = #{leave,jdbcType=INTEGER},
+            content = #{content,jdbcType=VARCHAR},
+            pic_url = #{picUrl,jdbcType=VARCHAR},
+            zan_count = #{zanCount,jdbcType=INTEGER},
+            comment_count = #{commentCount,jdbcType=INTEGER},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            title = #{title,jdbcType=VARCHAR},
+            state = #{state,jdbcType=INTEGER},
+            hits = #{hits,jdbcType=INTEGER}
+        where id = #{id ,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="updateSelective"  parameterType="java.util.HashMap">
+        update like_article
+          <set>
+            <if test="userId != null and userId != '' ">        
+                user_id = #{userId,jdbcType=BIGINT},                
+            </if>
+            <if test="userName != null and userName != '' ">        
+                user_name = #{userName,jdbcType=VARCHAR},                
+            </if>
+            <if test="sex != null and sex != '' ">        
+                sex = #{sex,jdbcType=INTEGER},                
+            </if>
+            <if test="logo != null and logo != '' ">        
+                logo = #{logo,jdbcType=VARCHAR},                
+            </if>
+            <if test="leave != null and leave != '' ">        
+                leave = #{leave,jdbcType=INTEGER},                
+            </if>
+            <if test="content != null and content != '' ">        
+                content = #{content,jdbcType=VARCHAR},                
+            </if>
+            <if test="picUrl != null and picUrl != '' ">        
+                pic_url = #{picUrl,jdbcType=VARCHAR},                
+            </if>
+            <if test="zanCount != null and zanCount != '' ">        
+                zan_count = #{zanCount,jdbcType=INTEGER},                
+            </if>
+            <if test="commentCount != null and commentCount != '' ">        
+                comment_count = #{commentCount,jdbcType=INTEGER},                
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},                
+            </if>
+            <if test="title != null and title != '' ">        
+                title = #{title,jdbcType=VARCHAR},                
+            </if>
+            <if test="state != null and state != '' ">        
+                state = #{state,jdbcType=INTEGER},                
+            </if>
+            <if test="hits != null and hits != '' ">        
+                hits = #{hits,jdbcType=INTEGER}                
+            </if>
+        </set>    
+        where id = #{id ,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="findByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from like_article
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+	<select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from like_article
+        <include refid="searchBy"/>
+    </select>
+               
+    <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from like_article
+        <include refid="searchBy"/>
+    </select>
+    
+</mapper>
