@@ -60,4 +60,8 @@ public class UserController extends BaseController {
 
     //endregion
 
+    //region 更换头像
+
+    //endregion
+
 }
