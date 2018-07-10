@@ -1,6 +1,7 @@
 package com.quygt.dkcs.service;
 
 
+import cn.jpush.api.report.UsersResult;
 import com.quygt.dkcs.model.UserInfo;
 import com.quygt.dkcs.service.base.BaseService;
 
@@ -15,4 +16,6 @@ public interface UserInfoService extends BaseService<UserInfo, Long> {
      * @return
      */
     UserInfo findUserByLoginName(String loginName);
+
+    UserInfo findUserInfoByUserId(Long userId);
 }

@@ -32,4 +32,11 @@ public class UserInfoServiceImpl extends BaseServiceImpl<UserInfo, Long> impleme
     public UserInfo findUserByLoginName(String loginName) {
         return null;
     }
+
+    @Override
+    public UserInfo findUserInfoByUserId(Long userId) {
+	    UserInfo userInfo=new UserInfo();
+	    userInfo.setId(userId);
+        return userInfoMapper.getmodel(userInfo);
+    }
 }
