@@ -2,6 +2,7 @@ package com.quygt.dkcs.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 动态表实体
@@ -80,6 +81,10 @@ import java.util.Date;
     * 创建时间
     */
     private Date createTime;
+
+    private List<CircleZan> zanList;
+
+    private List<CircleComment> commentList;
 
 
     /**
@@ -334,4 +339,19 @@ import java.util.Date;
         this.createTime = createTime;
     }
 
+    public List<CircleZan> getZanList() {
+        return zanList;
+    }
+
+    public void setZanList(List<CircleZan> zanList) {
+        this.zanList = zanList;
+    }
+
+    public List<CircleComment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<CircleComment> commentList) {
+        this.commentList = commentList;
+    }
 }

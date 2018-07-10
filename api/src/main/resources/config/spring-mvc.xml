@@ -62,66 +62,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/account/**"/>
-            <mvc:exclude-mapping path="/supply/getSupplyList"/>
-            <mvc:exclude-mapping path="/supply/selectListAll"/>
-            <mvc:exclude-mapping path="/supply/selectRollingMsg"/>
-            <mvc:exclude-mapping path="/supply/selectMainAlert"/>
-            <mvc:exclude-mapping path="/info/appIndex"/>
-
-            <mvc:exclude-mapping path="/info/getbanner"/>
-            <mvc:exclude-mapping path="/info/getdkdrbanner"/>
-            <mvc:exclude-mapping path="/errorlog/addErrorLog"/>
-            <mvc:exclude-mapping path="/info/getlaunchbanner"/>
-            <mvc:exclude-mapping path="/sys/getversion"/>
-            <mvc:exclude-mapping path="/info/registerprotocol"/>
-            <mvc:exclude-mapping path="/info/sign"/>
-            <mvc:exclude-mapping path="/info/getSign"/>
-            <mvc:exclude-mapping path="/assets/**"/>
-            <mvc:exclude-mapping path="/info/index"/>
-            <mvc:exclude-mapping path="/info/getnewslist"/>
-            <mvc:exclude-mapping path="/info/newsread"/>
-            <mvc:exclude-mapping path="/info/help"/>
-            <mvc:exclude-mapping path="/info/newsdetail"/>
-            <mvc:exclude-mapping path="/info/onlineswitch"/>
-            <mvc:exclude-mapping path="/supply/fydgetSupplyList"/>
-            <mvc:exclude-mapping path="/supply/fydaddSupplyLog"/>
-            <mvc:exclude-mapping path="/h5/**"/>
-            <mvc:exclude-mapping path="/hfive/**"/>
-            <mvc:exclude-mapping path="/info/tgmanageswitch"/>
-            <mvc:exclude-mapping path="/info/rebswith"/>
-            <mvc:exclude-mapping path="/html/supplyLog/addSupplyLog"/>
-            <mvc:exclude-mapping path="/account/registerUser"/>
-            <mvc:exclude-mapping path="/withdrawals/getNotice"/>
-            <mvc:exclude-mapping path="/withdrawals/getRule"/>
-            <bean class="com.quygt.dkcsapi.filter.TokenFilter" />
-        </mvc:interceptor>
-    </mvc:interceptors>
-    <!--sign拦截器-->
-    <mvc:interceptors>
-        <mvc:interceptor>
-            <mvc:mapping path="/**"/>
-            <mvc:exclude-mapping path="/info/registerprotocol"/>
-            <mvc:exclude-mapping path="/info/sign"/>
-            <mvc:exclude-mapping path="/info/getSign"/>
-            <mvc:exclude-mapping path="/info/getbanner"/>
-            <mvc:exclude-mapping path="/info/getdkdrbanner"/>
-            <mvc:exclude-mapping path="/account/register"/>
-            <mvc:exclude-mapping path="/assets/**"/>
-            <mvc:exclude-mapping path="/account/validateVcode"/>
-            <mvc:exclude-mapping path="/account/getRegisterCode"/>
-            <mvc:exclude-mapping path="/account/registerSubmit"/>
-            <mvc:exclude-mapping path="/info/help"/>
-            <mvc:exclude-mapping path="/info/newsdetail"/>
-            <mvc:exclude-mapping path="/supply/fydgetSupplyList"/>
-            <mvc:exclude-mapping path="/supply/fydaddSupplyLog"/>
-            <mvc:exclude-mapping path="/h5/**"/>
-            <mvc:exclude-mapping path="/hfive/**"/>
-            <mvc:exclude-mapping path="/html/**"/>
-            <mvc:exclude-mapping path="/info/tgmanageswitch"/>
-            <mvc:exclude-mapping path="/account/registerUser"/>
-            <mvc:exclude-mapping path="/withdrawals/getRule"/>
-            <bean class="com.quygt.dkcsapi.filter.SignFilter" />
+            <bean class="com.quygt.dkcsapi.filter.APIFilter" />
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>
