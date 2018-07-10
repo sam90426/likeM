@@ -56,5 +56,8 @@ public class UserController extends BaseController {
     }
     //endregion
 
+    //region 更新昵称
+
+    //endregion
 
 }
