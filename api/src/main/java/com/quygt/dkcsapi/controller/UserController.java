@@ -1,7 +1,10 @@
 package com.quygt.dkcsapi.controller;
 
+import com.quygt.dkcs.model.Friends;
 import com.quygt.dkcs.model.UserInfo;
+import com.quygt.dkcs.service.FriendsService;
 import com.quygt.dkcs.service.UserInfoService;
+import com.quygt.dkcs.utils.PageUtil;
 import com.quygt.dkcsapi.common.ServletUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +26,10 @@ public class UserController extends BaseController {
 
     @Resource
     private UserInfoService userInfoService;
+    @Resource
+    private FriendsService friendsService;
+
+    //region 用户信息修改
 
     //region 更新个性签名
 
@@ -127,22 +135,159 @@ public class UserController extends BaseController {
     }
     //endregion
 
-    //region 绑定手机
+    //endregion
+
+    //region 好友管理
+
+    //region 好友列表
 
     /**
-     *
      * @param userId
-     * @param mobile
+     * @param pageIndex
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "/updateMobile",method = RequestMethod.POST)
-    public void updateMobile(@RequestParam(value = "userId",required = true)Long userId,
-                             @RequestParam(value = "mobile",required = true)String mobile,
-                             HttpServletResponse response)throws Exception{
-        Map<String,Object> result=new HashMap<>();
+    @RequestMapping(value = "/friendsList", method = RequestMethod.POST)
+    public void friendsList(@RequestParam(value = "userId", required = true) Long userId,
+                            @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                            HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        Friends friends = new Friends();
+        friends.setUserId(userId);
+        friends.setState(2);
+        PageUtil<Friends> page = friendsService.getPageList(friends, pageIndex, 10);
+        data.put("friends", page);
+        friends = new Friends();
+        friends.setFriendUserId(userId);
+        friends.setState(1);
+        int applyCount = friendsService.selectCount(friends);
+        data.put("applyCount", applyCount);
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", data);
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
 
-        ServletUtils.writeToResponse(response,result);
+    //region 好友申请列表
+
+    /**
+     * @param userId
+     * @param pageIndex
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/friendsApplyList", method = RequestMethod.POST)
+    public void friendsApplyList(@RequestParam(value = "userId", required = true) Long userId,
+                                 @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                                 HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
+        Friends friends = new Friends();
+        friends.setFriendUserId(userId);
+        friends.setState(1);
+        PageUtil<Friends> page = friendsService.getPageList(friends, pageIndex, 10);
+        if (page.getData().size() > 0) {
+            for (Friends item : page.getData()) {
+                item.setFriendUserId(item.getUserId());
+                item.setFriendUserName(item.getUserName());
+                item.setFriendSex(0);
+            }
+        }
+        data.put("page", page);
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", data);
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 好友操作
+
+    /**
+     * @param userId
+     * @param friendsListId
+     * @param type          操作类型 2=同意申请 3=拒绝申请 4=删除好友
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/friendsOperation", method = RequestMethod.POST)
+    public void friendsOperation(@RequestParam(value = "userId", required = true) Long userId,
+                                 @RequestParam(value = "friendsListId", required = true) Long friendsListId,
+                                 @RequestParam(value = "type", required = true) Integer type,
+                                 HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Friends friends = friendsService.getById(friendsListId);
+        if (friends == null) {
+            result.put("code", 400);
+            result.put("msg", "该好友记录不存在");
+        } else {
+            switch (type) {
+                case 2:
+                    //region 同意好友申请
+                    friends.setState(2);
+                    if (friendsService.update(friends)) {
+                        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+                        Friends friends1 = new Friends();
+                        friends1.setUserId(friends.getFriendUserId());
+                        friends1.setUserName(friends.getFriendUserName());
+                        friends1.setFriendUserId(userInfo.getId());
+                        friends1.setFriendUserName(userInfo.getUserName());
+                        friends1.setFriendSex(userInfo.getSex());
+                        friends1.setState(2);
+                        friends1.setCreateTime(new Date());
+                        friendsService.insert(friends1);
+                        result.put("code", 200);
+                        result.put("msg", "同意成功");
+                    }
+                    //endregion
+                    break;
+                case 3:
+                    //region 拒绝好友申请
+                    friends.setState(1);
+                    friendsService.update(friends);
+                    result.put("code", 200);
+                    result.put("msg", "拒绝成功");
+                    //endregion
+                    break;
+                case 4:
+                    //region 删除好友
+                    Friends friends1 = new Friends();
+                    friends1.setUserId(friends.getFriendUserId());
+                    friends1.setFriendUserId(friends.getUserId());
+                    friendsService.delete(friends1);
+                    friendsService.delete(friends);
+                    result.put("code", 200);
+                    result.put("msg", "删除成功");
+                    //endregion
+                    break;
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //endregion
+
+    //region 用户信息
+
+    /**
+     * @param userId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getUserInfo", method = RequestMethod.POST)
+    public void getUserInfo(@RequestParam(value = "userId", required = true) Long userId,
+                            HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", userInfo);
+        ServletUtils.writeToResponse(response, result);
     }
     //endregion
 
