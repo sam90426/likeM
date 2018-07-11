@@ -92,4 +92,58 @@ public class UserController extends BaseController {
 
     //endregion
 
+    //region 修改密码
+
+    /**
+     * @param userId
+     * @param oldPwd
+     * @param newPwd
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
+    public void updatePwd(@RequestParam(value = "userId", required = true) Long userId,
+                          @RequestParam(value = "oldPwd", required = true) String oldPwd,
+                          @RequestParam(value = "newPwd", required = true) String newPwd,
+                          HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        if (userInfo == null) {
+            result.put("code", 400);
+            result.put("msg", "用户不存在");
+        } else {
+            if (userInfo.getPassword().equals(oldPwd)) {
+                userInfo.setPassword(newPwd);
+                userInfoService.update(userInfo);
+                result.put("code", 200);
+                result.put("msg", "保存成功");
+            } else {
+                result.put("code", 400);
+                result.put("msg", "旧密码不正确");
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 绑定手机
+
+    /**
+     *
+     * @param userId
+     * @param mobile
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updateMobile",method = RequestMethod.POST)
+    public void updateMobile(@RequestParam(value = "userId",required = true)Long userId,
+                             @RequestParam(value = "mobile",required = true)String mobile,
+                             HttpServletResponse response)throws Exception{
+        Map<String,Object> result=new HashMap<>();
+
+        ServletUtils.writeToResponse(response,result);
+    }
+    //endregion
+
 }
