@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @Auther: wuxianxin
@@ -238,12 +239,90 @@ public class ArticleController extends BaseController {
     //endregion
 
     //region 官方文章点赞列表
-    public void articleZanList(@RequestParam(value = "articleId",required = true)Long articleId,
-                               @RequestParam(value = "pageIndex",required = true)Integer pageIndex,
-                               HttpServletResponse response)throws Exception{
-        Map<String,Object> result=new HashMap<>();
 
-        ServletUtils.writeToResponse(response,result);
+    /**
+     * @param articleId
+     * @param pageIndex
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/articleZanList", method = RequestMethod.POST)
+    public void articleZanList(@RequestParam(value = "articleId", required = true) Long articleId,
+                               @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                               HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        LikeZan likeZan = new LikeZan();
+        likeZan.setLikeId(articleId);
+        PageUtil<LikeZan> page = likeZanService.getPageList(likeZan, pageIndex, 10);
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", page);
+        ServletUtils.writeToResponse(response, result);
     }
+    //endregion
+
+    //region 官方文章评论列表
+
+    /**
+     * @param articleId
+     * @param pageIndex
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/articleCommentList", method = RequestMethod.POST)
+    public void articleCommentList(@RequestParam(value = "articleId", required = true) Long articleId,
+                                   @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                                   HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        LikeComment likeComment = new LikeComment();
+        likeComment.setLikeId(articleId);
+        PageUtil<LikeComment> page = likeCommentService.getPageList(likeComment, pageIndex, 10);
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", page);
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 删除评论
+
+    /**
+     * @param userId
+     * @param commentId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delSrticleCom", method = RequestMethod.POST)
+    public void delSrticleCom(@RequestParam(value = "userId", required = true) Long userId,
+                              @RequestParam(value = "commentId", required = true) Long commentId,
+                              HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        LikeComment likeComment = likeCommentService.getById(commentId);
+        if (likeComment == null) {
+            result.put("code", 400);
+            result.put("msg", "该评论不存在");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        if (!Objects.equals(likeComment.getUserId(), userInfo.getId())) {
+            result.put("code", 400);
+            result.put("msg", "没有删除权限");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        if (likeCommentService.delete(likeComment)) {
+            result.put("code", 200);
+            result.put("msg", "删除成功");
+        } else {
+            result.put("code", 400);
+            result.put("msg", "删除失败");
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 官方文章取消点赞
+
     //endregion
 }
