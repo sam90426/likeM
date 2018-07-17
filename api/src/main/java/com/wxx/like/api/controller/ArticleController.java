@@ -352,10 +352,10 @@ public class ArticleController extends BaseController {
         }
         if (likeZanService.delete(likeZan)) {
             result.put("code", 200);
-            result.put("msg", "删除成功");
+            result.put("msg", "取消成功");
         } else {
             result.put("code", 400);
-            result.put("msg", "删除失败");
+            result.put("msg", "取消失败");
         }
         ServletUtils.writeToResponse(response, result);
     }
