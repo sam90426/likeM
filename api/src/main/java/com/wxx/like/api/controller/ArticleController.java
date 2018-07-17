@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
+ * @author Administrator
  * @Auther: wuxianxin
  * @Date: 2018/7/11 15:58
  * @Description:
@@ -324,5 +325,39 @@ public class ArticleController extends BaseController {
 
     //region 官方文章取消点赞
 
+    /**
+     * @param userId
+     * @param articleId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delArticleZan", method = RequestMethod.POST)
+    public void delArticleZan(@RequestParam(value = "userId", required = true) Long userId,
+                              @RequestParam(value = "articleId", required = true) Long articleId,
+                              HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        LikeZan likeZan = likeZanService.getById(articleId);
+        if (likeZan == null) {
+            result.put("code", 400);
+            result.put("msg", "操作失败");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        if (!Objects.equals(likeZan.getUserId(), userInfo.getId())) {
+            result.put("code", 400);
+            result.put("msg", "没有删除权限");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        if (likeZanService.delete(likeZan)) {
+            result.put("code", 200);
+            result.put("msg", "删除成功");
+        } else {
+            result.put("code", 400);
+            result.put("msg", "删除失败");
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
     //endregion
 }
