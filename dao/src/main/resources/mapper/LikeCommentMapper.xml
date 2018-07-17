@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- like_comment表:官方文章评论模块 -->
+<mapper namespace="com.wxx.like.dao.LikeCommentMapper">
+    <!--返回Map-->        
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.LikeComment">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="user_id" property="userId" jdbcType="BIGINT" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="sex" property="sex" jdbcType="INTEGER" />
+        <result column="logo" property="logo" jdbcType="VARCHAR" />
+        <result column="like_id" property="likeId" jdbcType="BIGINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="reply_user_id" property="replyUserId" jdbcType="BIGINT" />
+        <result column="reply_user_name" property="replyUserName" jdbcType="VARCHAR" />
+        <result column="comment" property="comment" jdbcType="VARCHAR" />
+        <result column="like_title" property="likeTitle" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <!--基本的sql查询字段 公共引用...-->
+    <sql id="Base_Column_List">
+        id,user_id,user_name,sex,logo,like_id,create_time,reply_user_id,reply_user_name,comment,like_title 
+    </sql>
+    
+    <!-- 基本的sql查询条件公共引用 -->
+    <sql id="searchBy">
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test=" id != null and id != '' ">
+                id  = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="userId != null and userId != '' ">
+                and user_id = #{userId,jdbcType=BIGINT}
+            </if>
+            <if test="userName != null and userName != '' ">
+                and user_name = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="sex != null and sex != '' ">
+                and sex = #{sex,jdbcType=INTEGER}
+            </if>
+            <if test="logo != null and logo != '' ">
+                and logo = #{logo,jdbcType=VARCHAR}
+            </if>
+            <if test="likeId != null and likeId != '' ">
+                and like_id = #{likeId,jdbcType=BIGINT}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="replyUserId != null and replyUserId != '' ">
+                and reply_user_id = #{replyUserId,jdbcType=BIGINT}
+            </if>
+            <if test="replyUserName != null and replyUserName != '' ">
+                and reply_user_name = #{replyUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="comment != null and comment != '' ">
+                and comment = #{comment,jdbcType=VARCHAR}
+            </if>
+            <if test="likeTitle != null and likeTitle != '' ">
+                and like_title = #{likeTitle,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </sql>
+    
+    
+    <insert id="save" parameterType="com.wxx.like.model.LikeComment">
+        insert into like_comment(user_id,user_name,sex,logo,like_id,create_time,reply_user_id,reply_user_name,comment,like_title)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{likeId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP},#{replyUserId,jdbcType=BIGINT},#{replyUserName,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR},#{likeTitle,jdbcType=VARCHAR})
+    </insert>
+
+    
+    <update id="update" parameterType="com.wxx.like.model.LikeComment">
+        update like_comment set 
+            user_id = #{userId,jdbcType=BIGINT},
+            user_name = #{userName,jdbcType=VARCHAR},
+            sex = #{sex,jdbcType=INTEGER},
+            logo = #{logo,jdbcType=VARCHAR},
+            like_id = #{likeId,jdbcType=BIGINT},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            reply_user_id = #{replyUserId,jdbcType=BIGINT},
+            reply_user_name = #{replyUserName,jdbcType=VARCHAR},
+            comment = #{comment,jdbcType=VARCHAR},
+            like_title = #{likeTitle,jdbcType=VARCHAR}
+        where id = #{id ,jdbcType=INTEGER}
+    </update>
+
+
+    <update id="updateSelective"  parameterType="java.util.HashMap">
+        update like_comment
+          <set>
+            <if test="userId != null and userId != '' ">        
+                user_id = #{userId,jdbcType=BIGINT},                
+            </if>
+            <if test="userName != null and userName != '' ">        
+                user_name = #{userName,jdbcType=VARCHAR},                
+            </if>
+            <if test="sex != null and sex != '' ">        
+                sex = #{sex,jdbcType=INTEGER},                
+            </if>
+            <if test="logo != null and logo != '' ">        
+                logo = #{logo,jdbcType=VARCHAR},                
+            </if>
+            <if test="likeId != null and likeId != '' ">        
+                like_id = #{likeId,jdbcType=BIGINT},                
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},                
+            </if>
+            <if test="replyUserId != null and replyUserId != '' ">        
+                reply_user_id = #{replyUserId,jdbcType=BIGINT},                
+            </if>
+            <if test="replyUserName != null and replyUserName != '' ">        
+                reply_user_name = #{replyUserName,jdbcType=VARCHAR},                
+            </if>
+            <if test="comment != null and comment != '' ">        
+                comment = #{comment,jdbcType=VARCHAR},                
+            </if>
+            <if test="likeTitle != null and likeTitle != '' ">        
+                like_title = #{likeTitle,jdbcType=VARCHAR}                
+            </if>
+        </set>    
+        where id = #{id ,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="findByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from like_comment
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+	<select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from like_comment
+        <include refid="searchBy"/>
+    </select>
+               
+    <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+        <include refid="Base_Column_List" />
+        from like_comment
+        <include refid="searchBy"/>
+    </select>
+    
+</mapper>

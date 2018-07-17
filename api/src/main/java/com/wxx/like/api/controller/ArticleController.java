@@ -1,11 +1,15 @@
 package com.wxx.like.api.controller;
 
+import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.model.LikeArticle;
+import com.wxx.like.model.LikeComment;
+import com.wxx.like.model.LikeZan;
 import com.wxx.like.model.UserInfo;
 import com.wxx.like.service.LikeArticleService;
+import com.wxx.like.service.LikeCommentService;
+import com.wxx.like.service.LikeZanService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.utils.PageUtil;
-import com.wxx.like.api.common.ServletUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +32,10 @@ public class ArticleController extends BaseController {
     private UserInfoService userInfoService;
     @Resource
     private LikeArticleService likeArticleService;
+    @Resource
+    private LikeZanService likeZanService;
+    @Resource
+    private LikeCommentService likeCommentService;
 
     //region 官方文章发布
 
@@ -106,6 +114,136 @@ public class ArticleController extends BaseController {
         result.put("msg", "查询成功");
         result.put("data", page);
         ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 官方文章点赞
+
+    /**
+     * @param userId
+     * @param articleId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/articleZan", method = RequestMethod.POST)
+    public void articleZan(@RequestParam(value = "userId", required = true) Long userId,
+                           @RequestParam(value = "articleId", required = true) Long articleId,
+                           HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        if (likeArticle == null) {
+            result.put("code", 400);
+            result.put("msg", "文章不存在");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        LikeZan likeZan = new LikeZan();
+        likeZan.setUserId(userInfo.getId());
+        likeZan.setLikeId(likeArticle.getId());
+        int count = likeZanService.selectCount(likeZan);
+        if (count > 0) {
+            result.put("code", 400);
+            result.put("msg", "已经赞过了");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        likeZan.setLogo(userInfo.getLogo());
+        likeZan.setSex(userInfo.getSex());
+        likeZan.setUserName(userInfo.getUserName());
+        likeZan.setCreateTime(new Date());
+        if (likeZanService.insert(likeZan)) {
+            result.put("code", 200);
+            result.put("msg", "点赞成功");
+        } else {
+            result.put("code", 400);
+            result.put("msg", "点赞失败,请重试");
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 官方文章评论
+
+    /**
+     * @param userId
+     * @param articleId
+     * @param replyUserId
+     * @param content
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/articleComment", method = RequestMethod.POST)
+    public void articleComment(@RequestParam(value = "userId", required = true) Long userId,
+                               @RequestParam(value = "articleId", required = true) Long articleId,
+                               @RequestParam(value = "replyUserId", required = true) Long replyUserId,
+                               @RequestParam(value = "content", required = true) String content,
+                               HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        if (likeArticle == null) {
+            result.put("code", 400);
+            result.put("msg", "文章不存在");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        LikeComment likeComment = new LikeComment();
+        likeComment.setUserId(userInfo.getId());
+        likeComment.setUserName(userInfo.getUserName());
+        likeComment.setSex(userInfo.getSex());
+        likeComment.setLogo(userInfo.getLogo());
+        likeComment.setLikeId(likeArticle.getId());
+        likeComment.setLikeTitle(likeArticle.getTitle());
+        if (replyUserId != null && replyUserId > 0) {
+            UserInfo userComment = userInfoService.findUserInfoByUserId(replyUserId);
+            likeComment.setReplyUserId(userComment.getId());
+            likeComment.setReplyUserName(userComment.getUserName());
+        }
+        likeComment.setComment(content);
+        likeComment.setCreateTime(new Date());
+        if (likeCommentService.insert(likeComment)) {
+            result.put("code", 200);
+            result.put("msg", "评论成功");
+        } else {
+            result.put("code", 400);
+            result.put("msg", "评论失败");
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 官方文章详情
+
+    /**
+     * @param articleId
+     * @param response
+     * @throws Exception
+     */
+    public void articleDetail(@RequestParam(value = "articleId", required = true) Long articleId,
+                              HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        if (likeArticle == null) {
+            result.put("code", 400);
+            result.put("msg", "该文章不存在");
+        } else {
+            result.put("code", 200);
+            result.put("msg", "查询成功");
+            result.put("data", likeArticle);
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 官方文章点赞列表
+    public void articleZanList(@RequestParam(value = "articleId",required = true)Long articleId,
+                               @RequestParam(value = "pageIndex",required = true)Integer pageIndex,
+                               HttpServletResponse response)throws Exception{
+        Map<String,Object> result=new HashMap<>();
+
+        ServletUtils.writeToResponse(response,result);
     }
     //endregion
 }
