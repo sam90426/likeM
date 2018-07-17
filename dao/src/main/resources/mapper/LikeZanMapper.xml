@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- like_zan表:官方文章点赞表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.LikeZanMapper">
+<mapper namespace="com.wxx.like.dao.LikeZanMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.LikeZan">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.LikeZan">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="BIGINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR" />
@@ -46,12 +46,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.LikeZan">
+    <insert id="save" parameterType="com.wxx.like.model.LikeZan">
         insert into like_zan(user_id,user_name,sex,logo,like_id,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{likeId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.LikeZan">
+    <update id="update" parameterType="com.wxx.like.model.LikeZan">
         update like_zan set 
             user_id = #{userId,jdbcType=BIGINT},
             user_name = #{userName,jdbcType=VARCHAR},

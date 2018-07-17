@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- circle_comment表:动态评论表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.CircleCommentMapper">
+<mapper namespace="com.wxx.like.dao.CircleCommentMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.CircleComment">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.CircleComment">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="BIGINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR" />
@@ -58,12 +58,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.CircleComment">
+    <insert id="save" parameterType="com.wxx.like.model.CircleComment">
         insert into circle_comment(user_id,user_name,sex,logo,circle_id,create_time,reply_user_id,reply_user_name,comment)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{circleId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP},#{replyUserId,jdbcType=BIGINT},#{replyUserName,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.CircleComment">
+    <update id="update" parameterType="com.wxx.like.model.CircleComment">
         update circle_comment set 
             user_id = #{userId,jdbcType=BIGINT},
             user_name = #{userName,jdbcType=VARCHAR},

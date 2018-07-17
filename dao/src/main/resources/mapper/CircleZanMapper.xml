@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- circle_zan表:动态点赞表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.CircleZanMapper">
+<mapper namespace="com.wxx.like.dao.CircleZanMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.CircleZan">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.CircleZan">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="BIGINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR" />
@@ -46,12 +46,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.CircleZan">
+    <insert id="save" parameterType="com.wxx.like.model.CircleZan">
         insert into circle_zan(user_id,user_name,sex,logo,circle_id,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{circleId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.CircleZan">
+    <update id="update" parameterType="com.wxx.like.model.CircleZan">
         update circle_zan set 
             user_id = #{userId,jdbcType=BIGINT},
             user_name = #{userName,jdbcType=VARCHAR},

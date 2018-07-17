@@ -62,7 +62,7 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <bean class="com.quygt.dkcsapi.filter.APIFilter" />
+            <bean class="com.wxx.like.api.filter.APIFilter" />
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- user_info表:用户信息表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.UserInfoMapper">
+<mapper namespace="com.wxx.like.dao.UserInfoMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.UserInfo">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.UserInfo">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="login_name" property="loginName" jdbcType="VARCHAR" />
         <result column="password" property="password" jdbcType="VARCHAR" />
@@ -74,12 +74,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.UserInfo">
+    <insert id="save" parameterType="com.wxx.like.model.UserInfo">
         insert into user_info(login_name,password,user_name,sign,sex,state,logo,mobile,email,label,level,experience,create_time)values(#{loginName,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{userName,jdbcType=VARCHAR},#{sign,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{state,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{mobile,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{label,jdbcType=VARCHAR},#{level,jdbcType=INTEGER},#{experience,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.UserInfo">
+    <update id="update" parameterType="com.wxx.like.model.UserInfo">
         update user_info set 
             login_name = #{loginName,jdbcType=VARCHAR},
             password = #{password,jdbcType=VARCHAR},

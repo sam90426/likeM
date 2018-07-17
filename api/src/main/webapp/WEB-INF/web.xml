@@ -41,7 +41,7 @@
     </listener>
     <servlet>
         <servlet-name>code</servlet-name>
-        <servlet-class>com.quygt.dkcsapi.common.code</servlet-class>
+        <servlet-class>com.wxx.like.api.common.code</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>code</servlet-name>

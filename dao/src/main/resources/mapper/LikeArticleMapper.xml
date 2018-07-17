@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- like_article表:官方文章表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.LikeArticleMapper">
+<mapper namespace="com.wxx.like.dao.LikeArticleMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.LikeArticle">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.LikeArticle">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="BIGINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR" />
@@ -74,12 +74,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.LikeArticle">
+    <insert id="save" parameterType="com.wxx.like.model.LikeArticle">
         insert into like_article(user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,create_time,title,state,hits)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{title,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{hits,jdbcType=INTEGER})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.LikeArticle">
+    <update id="update" parameterType="com.wxx.like.model.LikeArticle">
         update like_article set 
             user_id = #{userId,jdbcType=BIGINT},
             user_name = #{userName,jdbcType=VARCHAR},

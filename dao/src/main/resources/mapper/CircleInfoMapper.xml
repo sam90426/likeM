@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- circle_info表:动态表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.CircleInfoMapper">
+<mapper namespace="com.wxx.like.dao.CircleInfoMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.CircleInfo">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.CircleInfo">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="user_id" property="userId" jdbcType="BIGINT" />
         <result column="user_name" property="userName" jdbcType="VARCHAR" />
@@ -74,12 +74,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.CircleInfo">
+    <insert id="save" parameterType="com.wxx.like.model.CircleInfo">
         insert into circle_info(user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{lable,jdbcType=VARCHAR},#{country,jdbcType=VARCHAR},#{isOut,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.CircleInfo">
+    <update id="update" parameterType="com.wxx.like.model.CircleInfo">
         update circle_info set 
             user_id = #{userId,jdbcType=BIGINT},
             user_name = #{userName,jdbcType=VARCHAR},

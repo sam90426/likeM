@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- lable表:标签表模块 -->
-<mapper namespace="com.quygt.dkcs.dao.LableMapper">
+<mapper namespace="com.wxx.like.dao.LableMapper">
     <!--返回Map-->        
-    <resultMap id="BaseResultMap" type="com.quygt.dkcs.model.Lable">
+    <resultMap id="BaseResultMap" type="com.wxx.like.model.Lable">
         <id column="id" property="id" jdbcType="BIGINT" />
         <result column="lable_name" property="lableName" jdbcType="VARCHAR" />
         <result column="state" property="state" jdbcType="INTEGER" />
@@ -34,12 +34,12 @@
     </sql>
     
     
-    <insert id="save" parameterType="com.quygt.dkcs.model.Lable">
+    <insert id="save" parameterType="com.wxx.like.model.Lable">
         insert into lable(lable_name,state,create_time)values(#{lableName,jdbcType=VARCHAR},#{state,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
-    <update id="update" parameterType="com.quygt.dkcs.model.Lable">
+    <update id="update" parameterType="com.wxx.like.model.Lable">
         update lable set 
             lable_name = #{lableName,jdbcType=VARCHAR},
             state = #{state,jdbcType=INTEGER},
