@@ -36,4 +36,12 @@ public class CircleController extends BaseController {
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
+
+    //region 上传动态图片
+
+    //endregion
+
+    //region 发布动态
+
+    //endregion
 }
