@@ -1,8 +1,10 @@
 package com.wxx.like.api.controller;
 
 import com.wxx.like.api.common.ServletUtils;
+import com.wxx.like.service.CircleInfoService;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +17,8 @@ import java.util.Map;
  */
 public class CircleController extends BaseController {
 
+    @Resource
+    private CircleInfoService circleInfoService;
 
     //region 好友动态列表
 
