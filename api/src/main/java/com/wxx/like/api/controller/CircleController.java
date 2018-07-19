@@ -198,4 +198,8 @@ public class CircleController extends BaseController {
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
+
+    //region 取消点赞
+
+    //endregion
 }
