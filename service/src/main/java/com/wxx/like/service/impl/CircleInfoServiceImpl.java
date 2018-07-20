@@ -16,18 +16,19 @@ import javax.annotation.Resource;
 /**
  * 动态表ServiceImpl
  */
- 
+
 @Service("circleInfoService")
-public class CircleInfoServiceImpl extends BaseServiceImpl<CircleInfo, Long> implements CircleInfoService {
-	
+public class CircleInfoServiceImpl extends BaseServiceImpl<CircleInfo> implements CircleInfoService {
+
     private static final Logger logger = LoggerFactory.getLogger(CircleInfoServiceImpl.class);
-   
+
     @Resource
     private CircleInfoMapper circleInfoMapper;
 
-	public BaseMapper<CircleInfo, Long> getMapper() {
-		return circleInfoMapper;
-	}
+    @Override
+    public BaseMapper<CircleInfo> getMapper() {
+        return circleInfoMapper;
+    }
 
     @Override
     public PageUtil<CircleInfo> getFriendsPageList(CircleInfo circleInfo, Integer currPage, Integer pageSize) {

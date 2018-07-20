@@ -1,11 +1,14 @@
 package com.wxx.like.api.controller;
 
+import cn.jpush.api.push.model.PushPayload;
+import com.github.pagehelper.Page;
 import com.wxx.like.model.Friends;
 import com.wxx.like.model.UserInfo;
 import com.wxx.like.service.FriendsService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.utils.PageUtil;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,7 @@ import java.util.Map;
  * @Date: 2018/7/10 16:27
  * @Description:
  */
+@Controller
 @RequestMapping(value = "/user", produces = "text/plain;charset=UTF-8")
 public class UserController extends BaseController {
 
@@ -153,15 +157,15 @@ public class UserController extends BaseController {
                             HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
-        Friends friends = new Friends();
-        friends.setUserId(userId);
-        friends.setState(2);
-        PageUtil<Friends> page = friendsService.getPageList(friends, pageIndex, 10);
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("state",2);
+        Page<Friends> page = friendsService.getPageList(map, pageIndex, 10);
         data.put("friends", page);
-        friends = new Friends();
+        Friends friends = new Friends();
         friends.setFriendUserId(userId);
         friends.setState(1);
-        int applyCount = friendsService.selectCount(friends);
+        int applyCount = friendsService.selectcount(friends);
         data.put("applyCount", applyCount);
         result.put("code", 200);
         result.put("msg", "查询成功");
@@ -184,12 +188,12 @@ public class UserController extends BaseController {
                                  HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
-        Friends friends = new Friends();
-        friends.setFriendUserId(userId);
-        friends.setState(1);
-        PageUtil<Friends> page = friendsService.getPageList(friends, pageIndex, 10);
-        if (page.getData().size() > 0) {
-            for (Friends item : page.getData()) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("state",1);
+        Page<Friends> page = friendsService.getPageList(map, pageIndex, 10);
+        if (page.getResult().size() > 0) {
+            for (Friends item : page.getResult()) {
                 item.setFriendUserId(item.getUserId());
                 item.setFriendUserName(item.getUserName());
                 item.setFriendSex(0);
@@ -218,7 +222,7 @@ public class UserController extends BaseController {
                                  @RequestParam(value = "type", required = true) Integer type,
                                  HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        Friends friends = friendsService.getById(friendsListId);
+        Friends friends = friendsService.findByPrimary(friendsListId);
         if (friends == null) {
             result.put("code", 400);
             result.put("msg", "该好友记录不存在");
@@ -237,7 +241,7 @@ public class UserController extends BaseController {
                         friends1.setFriendSex(userInfo.getSex());
                         friends1.setState(2);
                         friends1.setCreateTime(new Date());
-                        friendsService.insert(friends1);
+                        friendsService.save(friends1);
                         result.put("code", 200);
                         result.put("msg", "同意成功");
                     }

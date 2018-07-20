@@ -8,10 +8,11 @@ import org.springframework.stereotype.Repository;
  * 用户信息表Dao
  */
 @Repository
-public interface UserInfoMapper extends BaseMapper<UserInfo, Long> {
+public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     /**
      * 根据登录名查找用户记录
+     *
      * @param loginName
      * @return
      */

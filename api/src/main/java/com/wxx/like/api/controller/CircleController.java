@@ -1,14 +1,9 @@
 package com.wxx.like.api.controller;
 
 import com.wxx.like.api.common.ServletUtils;
-import com.wxx.like.model.CircleInfo;
-import com.wxx.like.model.CircleZan;
-import com.wxx.like.model.Friends;
-import com.wxx.like.model.UserInfo;
-import com.wxx.like.service.CircleInfoService;
-import com.wxx.like.service.CircleZanService;
-import com.wxx.like.service.FriendsService;
-import com.wxx.like.service.UserInfoService;
+import com.wxx.like.model.*;
+import com.wxx.like.service.*;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +20,8 @@ import java.util.Map;
  * @Date: 2018/7/17 18:02
  * @Description:
  */
+@Controller
+@RequestMapping(value = "/circle", produces = "text/plain;charset=UTF-8")
 public class CircleController extends BaseController {
 
     @Resource
@@ -35,6 +32,8 @@ public class CircleController extends BaseController {
     private FriendsService friendsService;
     @Resource
     private CircleZanService circleZanService;
+    @Resource
+    private CircleCommentService circleCommentService;
 
     //region 好友动态列表
 
@@ -82,10 +81,10 @@ public class CircleController extends BaseController {
             ServletUtils.writeToResponse(response, result);
             return;
         }
-        Friends friends = new Friends();
-        friends.setUserId(userInfo.getId());
-        friends.setFriendUserId(friendInfo.getId());
-        friends = friendsService.getmodel(friends);
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userInfo.getId());
+        map.put("friendUserId",friendInfo.getId());
+        Friends friends = friendsService.findSelective(map);
         if (friends.getState() == 1) {
             result.put("code", 400);
             result.put("msg", "已申请,等待通过");
@@ -105,7 +104,7 @@ public class CircleController extends BaseController {
             friends.setFriendSex(friendInfo.getSex());
             friends.setState(1);
             friends.setCreateTime(new Date());
-            if (friendsService.insert(friends)) {
+            if (friendsService.save(friends)) {
                 result.put("code", 200);
                 result.put("msg", "申请成功,等待审核");
             } else {
@@ -128,7 +127,7 @@ public class CircleController extends BaseController {
     public void circleDetail(@RequestParam(value = "circleId", required = true) Long circleId,
                              HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        CircleInfo circleInfo = circleInfoService.getById(circleId);
+        CircleInfo circleInfo = circleInfoService.findByPrimary(circleId);
         if (circleInfo == null) {
             result.put("code", 400);
             result.put("msg", "该动态不存在");
@@ -166,15 +165,15 @@ public class CircleController extends BaseController {
                           HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        CircleInfo circleInfo = circleInfoService.getById(circleId);
+        CircleInfo circleInfo = circleInfoService.findByPrimary(circleId);
         if (circleInfo == null) {
             result.put("code", 400);
             result.put("msg", "该动态不存在");
         } else {
-            CircleZan circleZan = new CircleZan();
-            circleZan.setCircleId(circleId);
-            circleZan.setUserId(userId);
-            circleZan = circleZanService.getmodel(circleZan);
+            Map<String,Object> map=new HashMap<>();
+            map.put("circleId",circleId);
+            map.put("userId",userId);
+            CircleZan circleZan = circleZanService.findSelective(map);
             if (circleZan != null) {
                 result.put("code", 400);
                 result.put("msg", "已经赞过了");
@@ -186,7 +185,7 @@ public class CircleController extends BaseController {
                 circleZan.setLogo(userInfo.getLogo());
                 circleZan.setCircleId(circleId);
                 circleZan.setCreateTime(new Date());
-                if (circleZanService.insert(circleZan)) {
+                if (circleZanService.save(circleZan)) {
                     result.put("code", 200);
                     result.put("msg", "点赞成功");
                 } else {
@@ -201,5 +200,127 @@ public class CircleController extends BaseController {
 
     //region 取消点赞
 
+    /**
+     * @param userId
+     * @param circleId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/cancelCircleZan", method = RequestMethod.POST)
+    public void cancelCircleZan(@RequestParam(value = "userId", required = true) Long userId,
+                                @RequestParam(value = "circleId", required = true) Long circleId,
+                                HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Map<String,Object> map=new HashMap<>();
+        map.put("circleId",circleId);
+        map.put("userId",userId);
+        CircleZan circleZan = circleZanService.findSelective(map);
+        if (circleZan == null) {
+            result.put("code", 400);
+            result.put("msg", "取消点赞失败");
+        } else {
+            if (circleZanService.delete(circleZan)) {
+                result.put("code", 200);
+                result.put("msg", "取消点赞成功");
+            } else {
+                result.put("code", 400);
+                result.put("msg", "取消点赞失败");
+            }
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 评论列表
+
+    //endregion
+
+    //region 评论
+
+    /**
+     * @param userId
+     * @param circleId
+     * @param replyUserId
+     * @param comment
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/circleComment", method = RequestMethod.POST)
+    public void circleComment(@RequestParam(value = "userId", required = true) Long userId,
+                              @RequestParam(value = "circleId", required = true) Long circleId,
+                              @RequestParam(value = "replyUserId", required = true) Long replyUserId,
+                              @RequestParam(value = "comment", required = true) String comment,
+                              HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (comment.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "请输入评论内容");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        CircleInfo circleInfo = circleInfoService.findByPrimary(circleId);
+        if (circleInfo == null) {
+            result.put("code", 400);
+            result.put("msg", "该动态不存在");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        }
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        CircleComment circleComment = new CircleComment();
+        circleComment.setUserId(userInfo.getId());
+        circleComment.setUserName(userInfo.getUserName());
+        circleComment.setSex(userInfo.getSex());
+        circleComment.setLogo(userInfo.getLogo());
+        circleComment.setCircleId(circleInfo.getId());
+        if (replyUserId > 0) {
+            UserInfo commentUser = userInfoService.findUserInfoByUserId(replyUserId);
+            circleComment.setReplyUserId(commentUser.getId());
+            circleComment.setReplyUserName(commentUser.getUserName());
+        }
+        circleComment.setComment(comment);
+        circleComment.setCreateTime(new Date());
+        if (circleCommentService.save(circleComment)) {
+            result.put("code", 200);
+            result.put("msg", "评论成功");
+        } else {
+            result.put("code", 400);
+            result.put("msg", "评论失败，请重试");
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 评论删除
+
+    /**
+     * @param userId
+     * @param commentId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/delCircleComment", method = RequestMethod.POST)
+    public void delCircleComment(@RequestParam(value = "userId", required = true) Long userId,
+                                 @RequestParam(value = "commentId", required = true) Long commentId,
+                                 HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("commentId",commentId);
+        CircleComment circleComment = circleCommentService.findSelective(map);
+        if (circleComment == null) {
+            result.put("code", 400);
+            result.put("msg", "评论不存在");
+        } else {
+            if (circleCommentService.delete(circleComment)) {
+                result.put("code", 200);
+                result.put("msg", "删除成功");
+            } else {
+                result.put("code", 400);
+                result.put("msg", "删除失败");
+            }
+        }
+        ServletUtils.writeToResponse(response, result);
+    }
     //endregion
 }

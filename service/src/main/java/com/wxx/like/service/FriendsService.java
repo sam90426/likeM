@@ -7,6 +7,6 @@ import com.wxx.like.service.base.BaseService;
 /**
  * 好友表Service
  */
-public interface FriendsService extends BaseService<Friends, Long> {
+public interface FriendsService extends BaseService<Friends> {
 
 }

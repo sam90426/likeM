@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
  * 官方文章点赞表Dao
  */
 @Repository
-public interface LikeZanMapper extends BaseMapper<LikeZan, Long> {
+public interface LikeZanMapper extends BaseMapper<LikeZan> {
 
-    
 
 }

@@ -109,5 +109,12 @@
         from like_zan
         <include refid="searchBy"/>
     </select>
+
+    <select id="selectcount" resultType="java.lang.Integer" parameterType="com.wxx.like.model.LikeZan">
+        select
+        COUNT(1)
+        from like_zan
+        <include refid="searchBy"/>
+    </select>
     
 </mapper>

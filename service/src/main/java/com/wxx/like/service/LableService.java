@@ -7,6 +7,6 @@ import com.wxx.like.service.base.BaseService;
 /**
  * 标签表Service
  */
-public interface LableService extends BaseService<Lable, Long> {
+public interface LableService extends BaseService<Lable> {
 
 }

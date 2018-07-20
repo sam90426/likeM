@@ -1,5 +1,6 @@
 package com.wxx.like.api.controller;
 
+import com.github.pagehelper.Page;
 import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.model.LikeArticle;
 import com.wxx.like.model.LikeComment;
@@ -10,6 +11,7 @@ import com.wxx.like.service.LikeCommentService;
 import com.wxx.like.service.LikeZanService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.utils.PageUtil;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,6 +29,7 @@ import java.util.Objects;
  * @Date: 2018/7/11 15:58
  * @Description:
  */
+@Controller
 @RequestMapping(value = "/article", produces = "text/plain;charset=UTF-8")
 public class ArticleController extends BaseController {
 
@@ -71,7 +74,7 @@ public class ArticleController extends BaseController {
         likeArticle.setCommentCount(0);
         likeArticle.setHits(0);
         likeArticle.setCreateTime(new Date());
-        if (likeArticleService.insert(likeArticle)) {
+        if (likeArticleService.save(likeArticle)) {
             result.put("code", 200);
             result.put("msg", "发布成功");
         } else {
@@ -98,13 +101,15 @@ public class ArticleController extends BaseController {
         Map<String, Object> result = new HashMap<>();
         LikeArticle likeArticle = new LikeArticle();
         likeArticle.setState(1);
-        PageUtil<LikeArticle> page = likeArticleService.getPageList(likeArticle, pageIndex, 10);
-        if (page.getData().size() > 0) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("state",1);
+        Page<LikeArticle> page = likeArticleService.getPageList(map, pageIndex, 10);
+        if (page.getResult().size() > 0) {
             likeArticle = new LikeArticle();
             likeArticle.setUserId(userId);
-            for (LikeArticle item : page.getData()) {
+            for (LikeArticle item : page.getResult()) {
                 likeArticle.setId(item.getId());
-                int count = likeArticleService.selectCount(likeArticle);
+                int count = likeArticleService.selectcount(likeArticle);
                 if (count > 0) {
                     item.setZanCount(1);
                 } else {
@@ -133,7 +138,7 @@ public class ArticleController extends BaseController {
                            HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        LikeArticle likeArticle = likeArticleService.findByPrimary(articleId);
         if (likeArticle == null) {
             result.put("code", 400);
             result.put("msg", "文章不存在");
@@ -143,7 +148,7 @@ public class ArticleController extends BaseController {
         LikeZan likeZan = new LikeZan();
         likeZan.setUserId(userInfo.getId());
         likeZan.setLikeId(likeArticle.getId());
-        int count = likeZanService.selectCount(likeZan);
+        int count = likeZanService.selectcount(likeZan);
         if (count > 0) {
             result.put("code", 400);
             result.put("msg", "已经赞过了");
@@ -154,7 +159,7 @@ public class ArticleController extends BaseController {
         likeZan.setSex(userInfo.getSex());
         likeZan.setUserName(userInfo.getUserName());
         likeZan.setCreateTime(new Date());
-        if (likeZanService.insert(likeZan)) {
+        if (likeZanService.save(likeZan)) {
             result.put("code", 200);
             result.put("msg", "点赞成功");
         } else {
@@ -184,7 +189,7 @@ public class ArticleController extends BaseController {
                                HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        LikeArticle likeArticle = likeArticleService.findByPrimary(articleId);
         if (likeArticle == null) {
             result.put("code", 400);
             result.put("msg", "文章不存在");
@@ -205,7 +210,7 @@ public class ArticleController extends BaseController {
         }
         likeComment.setComment(content);
         likeComment.setCreateTime(new Date());
-        if (likeCommentService.insert(likeComment)) {
+        if (likeCommentService.save(likeComment)) {
             result.put("code", 200);
             result.put("msg", "评论成功");
         } else {
@@ -226,7 +231,7 @@ public class ArticleController extends BaseController {
     public void articleDetail(@RequestParam(value = "articleId", required = true) Long articleId,
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        LikeArticle likeArticle = likeArticleService.getById(articleId);
+        LikeArticle likeArticle = likeArticleService.findByPrimary(articleId);
         if (likeArticle == null) {
             result.put("code", 400);
             result.put("msg", "该文章不存在");
@@ -254,7 +259,9 @@ public class ArticleController extends BaseController {
         Map<String, Object> result = new HashMap<>();
         LikeZan likeZan = new LikeZan();
         likeZan.setLikeId(articleId);
-        PageUtil<LikeZan> page = likeZanService.getPageList(likeZan, pageIndex, 10);
+        Map<String,Object> map=new HashMap<>();
+        map.put("articleId",articleId);
+        Page<LikeZan> page = likeZanService.getPageList(map, pageIndex, 10);
         result.put("code", 200);
         result.put("msg", "查询成功");
         result.put("data", page);
@@ -277,7 +284,9 @@ public class ArticleController extends BaseController {
         Map<String, Object> result = new HashMap<>();
         LikeComment likeComment = new LikeComment();
         likeComment.setLikeId(articleId);
-        PageUtil<LikeComment> page = likeCommentService.getPageList(likeComment, pageIndex, 10);
+        Map<String,Object> map=new HashMap<>();
+        map.put("articleId",articleId);
+        Page<LikeComment> page = likeCommentService.getPageList(map, pageIndex, 10);
         result.put("code", 200);
         result.put("msg", "查询成功");
         result.put("data", page);
@@ -299,7 +308,7 @@ public class ArticleController extends BaseController {
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        LikeComment likeComment = likeCommentService.getById(commentId);
+        LikeComment likeComment = likeCommentService.findByPrimary(commentId);
         if (likeComment == null) {
             result.put("code", 400);
             result.put("msg", "该评论不存在");
@@ -337,7 +346,7 @@ public class ArticleController extends BaseController {
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        LikeZan likeZan = likeZanService.getById(articleId);
+        LikeZan likeZan = likeZanService.findByPrimary(articleId);
         if (likeZan == null) {
             result.put("code", 400);
             result.put("msg", "操作失败");

@@ -95,7 +95,7 @@ public class AccountController extends BaseController {
                 userInfo.setLevel(1);
                 userInfo.setExperience(0);
                 userInfo.setCreateTime(new Date());
-                boolean save = userInfoService.insert(userInfo);
+                boolean save = userInfoService.save(userInfo);
                 if (save) {
                     result.put("code", 200);
                     result.put("msg", "注册成功");
@@ -134,7 +134,7 @@ public class AccountController extends BaseController {
                 result.put("msg", "该账号不存在");
             } else {
                 userInfo.setPassword(password);
-                boolean save = userInfoService.updateById(userInfo);
+                boolean save = userInfoService.update(userInfo);
                 if (save) {
                     result.put("code", 200);
                     result.put("msg", "找回成功");

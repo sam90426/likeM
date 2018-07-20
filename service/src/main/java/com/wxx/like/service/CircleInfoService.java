@@ -8,7 +8,7 @@ import com.wxx.like.utils.PageUtil;
 /**
  * 动态表Service
  */
-public interface CircleInfoService extends BaseService<CircleInfo, Long> {
+public interface CircleInfoService extends BaseService<CircleInfo> {
 
     PageUtil<CircleInfo> getFriendsPageList(CircleInfo circleInfo, Integer currPage, Integer pageSize);
 }

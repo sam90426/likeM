@@ -109,5 +109,12 @@
         from circle_zan
         <include refid="searchBy"/>
     </select>
+
+    <select id="selectcount" resultType="java.lang.Integer" parameterType="com.wxx.like.model.CircleZan">
+        select
+        COUNT(1)
+        from circle_zan
+        <include refid="searchBy"/>
+    </select>
     
 </mapper>

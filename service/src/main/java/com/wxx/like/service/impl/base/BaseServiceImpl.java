@@ -1,60 +1,63 @@
 package com.wxx.like.service.impl.base;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.wxx.like.dao.base.BaseMapper;
 import com.wxx.like.service.base.BaseService;
 import com.wxx.like.utils.PageUtil;
 
-import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
-public class BaseServiceImpl<T, ID extends Serializable> implements BaseService<T, ID> {
+public abstract class BaseServiceImpl<T> implements BaseService<T> {
+
+    public abstract BaseMapper<T> getMapper();
 
     @Override
-    public Integer selectCount(T record) {
+    public boolean save(T model) {
+        return getMapper().save(model);
+    }
+
+    @Override
+    public boolean delete(T model) {
+        return getMapper().delete(model);
+    }
+
+    @Override
+    public boolean update(T model) {
+        return getMapper().update(model);
+    }
+
+    @Override
+    public T findSelective(Map<String, Object> map) {
+        return getMapper().findSelective(map);
+    }
+
+    @Override
+    public boolean updateSelective(Map<String, Object> map) {
+        return getMapper().updateSelective(map);
+    }
+
+    @Override
+    public T findByPrimary(Long id) {
+        return getMapper().findByPrimary(id);
+    }
+
+    @Override
+    public List<T> listSelective(Map<String, Object> map) {
+        return getMapper().listSelective(map);
+    }
+
+    @Override
+    public Integer selectcount(T model) {
         return null;
     }
 
     @Override
-    public boolean insert(T record) {
-        return false;
-    }
+    public Page<T> getPageList(Map<String,Object> map, Integer pageIndex, Integer pageSize) {
 
-    @Override
-    public boolean updateById(T record) {
-        return false;
-    }
-
-    @Override
-    public boolean updateByIds(T record, Serializable[] ids) {
-        return false;
-    }
-
-    @Override
-    public T getById(Serializable id) {
-        return null;
-    }
-
-    @Override
-    public boolean delete(T e) {
-        return false;
-    }
-
-    @Override
-    public PageUtil<T> getPageList(T e, Integer currPage, Integer pageSize) {
-        return null;
-    }
-
-    @Override
-    public List<T> getlist(T e) {
-        return null;
-    }
-
-    @Override
-    public T getmodel(T e) {
-        return null;
-    }
-
-    @Override
-    public boolean update(T e) {
-        return false;
+        PageHelper.startPage(pageIndex, pageSize);
+        List<T> list = getMapper().listSelective(map);
+        return (Page<T>) list;
     }
 }

@@ -8,8 +8,7 @@ import org.springframework.stereotype.Repository;
  * 官方文章表Dao
  */
 @Repository
-public interface LikeArticleMapper extends BaseMapper<LikeArticle, Long> {
+public interface LikeArticleMapper extends BaseMapper<LikeArticle> {
 
-    
 
 }

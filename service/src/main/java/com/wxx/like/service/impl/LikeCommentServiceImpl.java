@@ -17,14 +17,15 @@ import javax.annotation.Resource;
  */
 
 @Service("likeCommentService")
-public class LikeCommentServiceImpl extends BaseServiceImpl<LikeComment, Long> implements LikeCommentService {
+public class LikeCommentServiceImpl extends BaseServiceImpl<LikeComment> implements LikeCommentService {
 
     private static final Logger logger = LoggerFactory.getLogger(LikeCommentServiceImpl.class);
 
     @Resource
     private LikeCommentMapper likeCommentMapper;
 
-    public BaseMapper<LikeComment, Long> getMapper() {
+    @Override
+    public BaseMapper<LikeComment> getMapper() {
         return likeCommentMapper;
     }
 

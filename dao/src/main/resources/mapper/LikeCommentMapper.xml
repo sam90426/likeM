@@ -141,5 +141,11 @@
         from like_comment
         <include refid="searchBy"/>
     </select>
-    
+
+    <select id="selectcount" resultType="java.lang.Integer" parameterType="com.wxx.like.model.LikeComment">
+        select
+        COUNT(1)
+        from like_comment
+        <include refid="searchBy"/>
+    </select>
 </mapper>

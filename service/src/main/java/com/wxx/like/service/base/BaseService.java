@@ -1,51 +1,32 @@
 package com.wxx.like.service.base;
 
+import com.github.pagehelper.Page;
 import com.wxx.like.utils.PageUtil;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 基类接口定义
  */
-public interface BaseService<T, ID extends Serializable> {
+public interface BaseService<T> {
 
-    /**
-     * 条数
-     * @param record
-     * @return
-     */
-    Integer selectCount(T record);
+    boolean save(T model);
 
-    boolean insert(T record);
+    boolean delete(T model);
 
+    boolean update(T model);
 
-    boolean updateById(T record);
+    T findSelective(Map<String,Object> map);
 
-    boolean updateByIds(T record,Serializable [] ids);
+    boolean updateSelective(Map<String,Object> map);
 
-    T getById(Serializable id);
+    T findByPrimary(Long id);
 
-    /**
-     * 根据实体删除
-     *
-     * @param e
-     * @return
-     */
-    boolean delete(T e);
+    List<T> listSelective (Map<String,Object> map);
 
-    PageUtil<T> getPageList(T e, Integer currPage, Integer pageSize);
+    Integer selectcount(T model);
 
-    /**
-     * 查询列表 未分页
-     *
-     * @param e
-     * @return
-     */
-    List<T> getlist(T e);
-
-    T getmodel(T e);
-
-    boolean update(T e);
-
+    Page<T> getPageList(Map<String,Object> map, Integer pageIndex, Integer pageSize);
 }

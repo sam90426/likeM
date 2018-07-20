@@ -2,7 +2,7 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
-        <package name="com.quygt.dkcs.model"/>
+        <package name="com.wxx.like.model"/>
     </typeAliases>
     <plugins>
         <plugin interceptor="com.github.pagehelper.PageHelper">

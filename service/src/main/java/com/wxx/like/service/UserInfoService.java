@@ -7,7 +7,7 @@ import com.wxx.like.service.base.BaseService;
 /**
  * 用户信息表Service
  */
-public interface UserInfoService extends BaseService<UserInfo, Long> {
+public interface UserInfoService extends BaseService<UserInfo> {
 
     /**
      * 根据登录名查找用户记录

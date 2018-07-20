@@ -170,8 +170,15 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM user_info
+        WHERE
         login_name = #{loginName,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectcount" resultType="java.lang.Integer" parameterType="com.wxx.like.model.UserInfo">
+        select
+        COUNT(1)
+        from user_info
+        <include refid="searchBy"/>
+    </select>
     
 </mapper>

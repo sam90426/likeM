@@ -7,6 +7,6 @@ import com.wxx.like.service.base.BaseService;
 /**
  * 动态评论表Service
  */
-public interface CircleCommentService extends BaseService<CircleComment, Long> {
+public interface CircleCommentService extends BaseService<CircleComment> {
 
 }

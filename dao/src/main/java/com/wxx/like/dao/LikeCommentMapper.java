@@ -9,8 +9,7 @@ import org.springframework.stereotype.Repository;
  * 官方文章评论Dao
  */
 @Repository
-public interface LikeCommentMapper extends BaseMapper<LikeComment, Long> {
+public interface LikeCommentMapper extends BaseMapper<LikeComment> {
 
-    
 
 }

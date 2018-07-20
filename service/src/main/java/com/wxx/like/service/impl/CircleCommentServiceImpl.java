@@ -17,14 +17,15 @@ import javax.annotation.Resource;
  */
 
 @Service("circleCommentService")
-public class CircleCommentServiceImpl extends BaseServiceImpl<CircleComment, Long> implements CircleCommentService {
+public class CircleCommentServiceImpl extends BaseServiceImpl<CircleComment> implements CircleCommentService {
 
     private static final Logger logger = LoggerFactory.getLogger(CircleCommentServiceImpl.class);
 
     @Resource
     private CircleCommentMapper circleCommentMapper;
 
-    public BaseMapper<CircleComment, Long> getMapper() {
+    @Override
+    public BaseMapper<CircleComment> getMapper() {
         return circleCommentMapper;
     }
 

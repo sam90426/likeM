@@ -1,7 +1,5 @@
 package com.wxx.like.service.impl;
 
-import javax.annotation.Resource;
-
 import com.wxx.like.dao.CircleZanMapper;
 import com.wxx.like.dao.base.BaseMapper;
 import com.wxx.like.model.CircleZan;
@@ -11,22 +9,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 
 
 /**
  * 动态点赞表ServiceImpl
  */
- 
+
 @Service("circleZanService")
-public class CircleZanServiceImpl extends BaseServiceImpl<CircleZan, Long> implements CircleZanService {
-	
+public class CircleZanServiceImpl extends BaseServiceImpl<CircleZan> implements CircleZanService {
+
     private static final Logger logger = LoggerFactory.getLogger(CircleZanServiceImpl.class);
-   
+
     @Resource
     private CircleZanMapper circleZanMapper;
 
-	public BaseMapper<CircleZan, Long> getMapper() {
-		return circleZanMapper;
-	}
-	
+    @Override
+    public BaseMapper<CircleZan> getMapper() {
+        return circleZanMapper;
+    }
+
 }

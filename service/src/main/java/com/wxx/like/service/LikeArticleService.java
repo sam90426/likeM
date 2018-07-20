@@ -7,6 +7,6 @@ import com.wxx.like.service.base.BaseService;
 /**
  * 官方文章表Service
  */
-public interface LikeArticleService extends BaseService<LikeArticle, Long> {
+public interface LikeArticleService extends BaseService<LikeArticle> {
 
 }
