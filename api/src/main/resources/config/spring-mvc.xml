@@ -59,10 +59,10 @@
         <property name="maxUploadSize" value="5242880"/>
     </bean>
     <!--token拦截器-->
-<!--    <mvc:interceptors>
+    <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <bean class="com.wxx.like.api.filter.APIFilter" />
         </mvc:interceptor>
-    </mvc:interceptors>-->
+    </mvc:interceptors>
 </beans>

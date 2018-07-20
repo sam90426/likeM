@@ -20,7 +20,7 @@ public class APIFilter implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
 
-        Map<String, String> params = new HashMap<String, String>();
+        /*Map<String, String> params = new HashMap<String, String>();
         Map requestParams = httpServletRequest.getParameterMap();
         for (Iterator iterator = requestParams.keySet().iterator(); iterator.hasNext(); ) {
             String name = (String) iterator.next();
@@ -46,7 +46,7 @@ public class APIFilter implements HandlerInterceptor {
         }
         if (!Md5Util.md5(queryString.toString() + ConfigUtil.getInstance().getString("md5AppKey")).equals(sign)) {
             return AppContext.errorReturn(httpServletResponse, -1, "sign验证失败");
-        }
+        }*/
         return true;
     }
 
