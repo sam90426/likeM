@@ -160,7 +160,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public void friendsList(@RequestParam(value = "userId", required = true) Long userId,
                             @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
-                            HttpServletResponse response) {
+                            HttpServletResponse response)throws Exception{
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<String,Object> map=new HashMap<>();
@@ -193,7 +193,7 @@ public class UserController extends BaseController {
     @ResponseBody
     public void friendsApplyList(@RequestParam(value = "userId", required = true) Long userId,
                                  @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
-                                 HttpServletResponse response) {
+                                 HttpServletResponse response)throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<String,Object> map=new HashMap<>();

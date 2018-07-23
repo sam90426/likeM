@@ -5,6 +5,7 @@ import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.model.*;
 import com.wxx.like.service.*;
 import com.wxx.like.utils.PageUtil;
+import com.wxx.like.utils.RdPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +45,6 @@ public class IndexController extends BaseController {
      *
      * @param userId
      * @param label
-     * @param lastcircleId
      * @param pageindex
      * @param response
      * @throws Exception
@@ -54,11 +54,11 @@ public class IndexController extends BaseController {
     public void findIndex(@RequestParam(value = "userId", required = true) Long userId,
                           @RequestParam(value = "label", required = true) String label,
                           @RequestParam(value = "pageindex", required = true) Integer pageindex,
-                          HttpServletResponse response)  {
+                          HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         //首页轮播
-        List<LikeArticle> indexBanner = likeArticleService.listSelective(new HashMap<String,Object>());
+        List<LikeArticle> indexBanner = likeArticleService.listSelective(data);
         //首页动态
         Map<String,Object> map=new HashMap<>();
         map.put("isOut",1);
@@ -99,6 +99,7 @@ public class IndexController extends BaseController {
         }
         data.put("indexBanner", indexBanner);
         data.put("circlelist", page.getResult());
+        data.put("pageInfo",new RdPage(page));
         result.put("code", 200);
         result.put("msg", "查询成功");
         result.put("data", data);

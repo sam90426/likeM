@@ -36,7 +36,7 @@ public class AccountController extends BaseController {
     @ResponseBody
     public void login(@RequestParam(value = "mobile", required = true) String mobile,
                       @RequestParam(value = "password", required = true) String password,
-                      HttpServletResponse response) {
+                      HttpServletResponse response) throws Exception{
         Map<String, Object> result = new HashMap<>();
         if (mobile.isEmpty() || password.isEmpty()) {
             result.put("code", 400);

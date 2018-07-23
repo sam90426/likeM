@@ -22,7 +22,7 @@
     
     <!--基本的sql查询字段 公共引用...-->
     <sql id="Base_Column_List">
-        id,user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time 
+        id,user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time
     </sql>
     
     <!-- 基本的sql查询条件公共引用 -->
@@ -44,7 +44,7 @@
                 and logo = #{logo,jdbcType=VARCHAR}
             </if>
             <if test="leave != null and leave != '' ">
-                and leave = #{leave,jdbcType=INTEGER}
+                and `leave` = #{leave,jdbcType=INTEGER}
             </if>
             <if test="content != null and content != '' ">
                 and content = #{content,jdbcType=VARCHAR}
@@ -75,7 +75,7 @@
     
     
     <insert id="save" parameterType="com.wxx.like.model.CircleInfo">
-        insert into circle_info(user_id,user_name,sex,logo,leave,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{lable,jdbcType=VARCHAR},#{country,jdbcType=VARCHAR},#{isOut,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
+        insert into circle_info(user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{lable,jdbcType=VARCHAR},#{country,jdbcType=VARCHAR},#{isOut,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
     
@@ -85,7 +85,7 @@
             user_name = #{userName,jdbcType=VARCHAR},
             sex = #{sex,jdbcType=INTEGER},
             logo = #{logo,jdbcType=VARCHAR},
-            leave = #{leave,jdbcType=INTEGER},
+            `leave` = #{leave,jdbcType=INTEGER},
             content = #{content,jdbcType=VARCHAR},
             pic_url = #{picUrl,jdbcType=VARCHAR},
             zan_count = #{zanCount,jdbcType=INTEGER},
@@ -114,7 +114,7 @@
                 logo = #{logo,jdbcType=VARCHAR},                
             </if>
             <if test="leave != null and leave != '' ">        
-                leave = #{leave,jdbcType=INTEGER},                
+                `leave` = #{leave,jdbcType=INTEGER},
             </if>
             <if test="content != null and content != '' ">        
                 content = #{content,jdbcType=VARCHAR},                
@@ -171,6 +171,15 @@
         COUNT(1)
         from circle_info
         <include refid="searchBy"/>
+    </select>
+
+    <select id="getFriendsPageList" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List" />
+        from circle_info
+        where user_id = #{userId} AND user_id IN (
+        SELECT user_id FROM friends WHERE friend_user_id=#{userId}
+        )
     </select>
     
 </mapper>

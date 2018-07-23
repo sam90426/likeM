@@ -1,8 +1,12 @@
 package com.wxx.like.api.controller;
 
+import com.github.pagehelper.Page;
 import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.model.*;
 import com.wxx.like.service.*;
+import com.wxx.like.utils.RdPage;
+import org.omg.CORBA.DATA_CONVERSION;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,11 +48,18 @@ public class CircleController extends BaseController {
      * @param response
      * @throws Exception
      */
+    @RequestMapping(value = "/friendsCircle",method = RequestMethod.POST)
     public void friendsCircle(@RequestParam(value = "userId", required = true) Long userId,
                               @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-
+        Page<CircleInfo> page=circleInfoService.getFriendsPageList(userId,pageIndex,10);
+        Map<String,Object> data=new HashMap<>();
+        data.put("friendsCircle",page);
+        data.put("pageInfo",new RdPage(page));
+        result.put("code",200);
+        result.put("msg","操作成功");
+        result.put("data",data);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -144,12 +155,30 @@ public class CircleController extends BaseController {
     //endregion
 
     //region 点赞列表
+
+    /**
+     *
+     * @param userId
+     * @param circleId
+     * @param pageIndex
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/zanList",method = RequestMethod.POST)
     public void zanList(@RequestParam(value = "userId", required = true) Long userId,
                         @RequestParam(value = "circleId", required = true) Long circleId,
                         @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                         HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-
+        Map<String, Object> map = new HashMap<>();
+        map.put("circleId",circleId);
+        Page<CircleZan> page=circleZanService.getPageList(map,pageIndex,10);
+        map=new HashMap<>();
+        map.put("zanList",page);
+        map.put("pageInfo",new RdPage(page));
+        result.put("code",200);
+        result.put("msg","查询成功");
+        result.put("data",map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -237,7 +266,23 @@ public class CircleController extends BaseController {
     //endregion
 
     //region 评论列表
-
+    @RequestMapping(value = "/commentList",method = RequestMethod.POST)
+    public void commentList(@RequestParam(value = "userId", required = true) Long userId,
+                        @RequestParam(value = "circleId", required = true) Long circleId,
+                        @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                        HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
+        map.put("circleId",circleId);
+        Page<CircleComment> page=circleCommentService.getPageList(map,pageIndex,10);
+        map=new HashMap<>();
+        map.put("zanList",page);
+        map.put("pageInfo",new RdPage(page));
+        result.put("code",200);
+        result.put("msg","查询成功");
+        result.put("data",map);
+        ServletUtils.writeToResponse(response, result);
+    }
     //endregion
 
     //region 评论

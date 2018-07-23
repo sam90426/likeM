@@ -11,6 +11,8 @@ import com.wxx.like.service.LikeCommentService;
 import com.wxx.like.service.LikeZanService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.utils.PageUtil;
+import com.wxx.like.utils.RdPage;
+import org.aspectj.bridge.MessageWriter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.crypto.dsig.keyinfo.PGPData;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -120,9 +123,12 @@ public class ArticleController extends BaseController {
                 }
             }
         }
+        map=new HashMap<>();
+        map.put("articleList",page);
+        map.put("pageInfo",new RdPage(page));
         result.put("code", 200);
         result.put("msg", "查询成功");
-        result.put("data", page);
+        result.put("data", map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -270,9 +276,12 @@ public class ArticleController extends BaseController {
         Map<String,Object> map=new HashMap<>();
         map.put("articleId",articleId);
         Page<LikeZan> page = likeZanService.getPageList(map, pageIndex, 10);
+        map= new HashMap<>();
+        map.put("articleZanList", page);
+        map.put("pageInfo",new RdPage(page));
         result.put("code", 200);
         result.put("msg", "查询成功");
-        result.put("data", page);
+        result.put("data", map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -296,9 +305,12 @@ public class ArticleController extends BaseController {
         Map<String,Object> map=new HashMap<>();
         map.put("articleId",articleId);
         Page<LikeComment> page = likeCommentService.getPageList(map, pageIndex, 10);
+        map=new HashMap<>();
+        map.put("articleCommentList",page);
+        map.put("pageInfo",new RdPage(page));
         result.put("code", 200);
         result.put("msg", "查询成功");
-        result.put("data", page);
+        result.put("data", map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion

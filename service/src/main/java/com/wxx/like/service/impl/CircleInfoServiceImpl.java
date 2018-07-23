@@ -1,16 +1,18 @@
 package com.wxx.like.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.wxx.like.dao.CircleInfoMapper;
 import com.wxx.like.dao.base.BaseMapper;
 import com.wxx.like.model.CircleInfo;
 import com.wxx.like.service.CircleInfoService;
 import com.wxx.like.service.impl.base.BaseServiceImpl;
-import com.wxx.like.utils.PageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -31,7 +33,9 @@ public class CircleInfoServiceImpl extends BaseServiceImpl<CircleInfo> implement
     }
 
     @Override
-    public PageUtil<CircleInfo> getFriendsPageList(CircleInfo circleInfo, Integer currPage, Integer pageSize) {
-        return null;
+    public Page<CircleInfo> getFriendsPageList(Long userId, Integer currPage, Integer pageSize) {
+        PageHelper.startPage(currPage, pageSize);
+        List<CircleInfo> list = circleInfoMapper.getFriendsPageList(userId);
+        return (Page<CircleInfo>) list;
     }
 }
