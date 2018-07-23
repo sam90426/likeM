@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -53,6 +54,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/sendArticle", method = RequestMethod.POST)
+    @ResponseBody
     public void sendArticle(@RequestParam(value = "userId", required = true) Long userId,
                             @RequestParam(value = "title", required = true) String title,
                             @RequestParam(value = "content", required = true) String content,
@@ -95,6 +97,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/articleList", method = RequestMethod.POST)
+    @ResponseBody
     public void articleList(@RequestParam(value = "userId", required = true) Long userId,
                             @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                             HttpServletResponse response) throws Exception {
@@ -133,6 +136,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/articleZan", method = RequestMethod.POST)
+    @ResponseBody
     public void articleZan(@RequestParam(value = "userId", required = true) Long userId,
                            @RequestParam(value = "articleId", required = true) Long articleId,
                            HttpServletResponse response) throws Exception {
@@ -182,6 +186,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/articleComment", method = RequestMethod.POST)
+    @ResponseBody
     public void articleComment(@RequestParam(value = "userId", required = true) Long userId,
                                @RequestParam(value = "articleId", required = true) Long articleId,
                                @RequestParam(value = "replyUserId", required = true) Long replyUserId,
@@ -228,6 +233,8 @@ public class ArticleController extends BaseController {
      * @param response
      * @throws Exception
      */
+    @RequestMapping(value = "/articleDetail",method = RequestMethod.POST)
+    @ResponseBody
     public void articleDetail(@RequestParam(value = "articleId", required = true) Long articleId,
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
@@ -253,6 +260,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/articleZanList", method = RequestMethod.POST)
+    @ResponseBody
     public void articleZanList(@RequestParam(value = "articleId", required = true) Long articleId,
                                @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                                HttpServletResponse response) throws Exception {
@@ -278,6 +286,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/articleCommentList", method = RequestMethod.POST)
+    @ResponseBody
     public void articleCommentList(@RequestParam(value = "articleId", required = true) Long articleId,
                                    @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                                    HttpServletResponse response) throws Exception {
@@ -303,6 +312,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/delSrticleCom", method = RequestMethod.POST)
+    @ResponseBody
     public void delSrticleCom(@RequestParam(value = "userId", required = true) Long userId,
                               @RequestParam(value = "commentId", required = true) Long commentId,
                               HttpServletResponse response) throws Exception {
@@ -341,6 +351,7 @@ public class ArticleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/delArticleZan", method = RequestMethod.POST)
+    @ResponseBody
     public void delArticleZan(@RequestParam(value = "userId", required = true) Long userId,
                               @RequestParam(value = "articleId", required = true) Long articleId,
                               HttpServletResponse response) throws Exception {

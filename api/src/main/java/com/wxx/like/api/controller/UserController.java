@@ -8,10 +8,12 @@ import com.wxx.like.service.FriendsService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.utils.PageUtil;
+import com.wxx.like.utils.RdPage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,7 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/updateSign", method = RequestMethod.POST)
+    @ResponseBody
     public void updateSign(@RequestParam(value = "userId", required = true) Long userId,
                            @RequestParam(value = "content", required = true) String content,
                            HttpServletResponse response) throws Exception {
@@ -76,6 +79,7 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/updateNickName", method = RequestMethod.POST)
+    @ResponseBody
     public void updateNickName(@RequestParam(value = "userId", required = true) Long userId,
                                @RequestParam(value = "nickName", required = true) String nickName,
                                HttpServletResponse response) throws Exception {
@@ -114,6 +118,7 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/updatePwd", method = RequestMethod.POST)
+    @ResponseBody
     public void updatePwd(@RequestParam(value = "userId", required = true) Long userId,
                           @RequestParam(value = "oldPwd", required = true) String oldPwd,
                           @RequestParam(value = "newPwd", required = true) String newPwd,
@@ -152,9 +157,10 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/friendsList", method = RequestMethod.POST)
+    @ResponseBody
     public void friendsList(@RequestParam(value = "userId", required = true) Long userId,
                             @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
-                            HttpServletResponse response) throws Exception {
+                            HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<String,Object> map=new HashMap<>();
@@ -162,6 +168,7 @@ public class UserController extends BaseController {
         map.put("state",2);
         Page<Friends> page = friendsService.getPageList(map, pageIndex, 10);
         data.put("friends", page);
+        data.put("page",new RdPage(page));
         Friends friends = new Friends();
         friends.setFriendUserId(userId);
         friends.setState(1);
@@ -183,9 +190,10 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/friendsApplyList", method = RequestMethod.POST)
+    @ResponseBody
     public void friendsApplyList(@RequestParam(value = "userId", required = true) Long userId,
                                  @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
-                                 HttpServletResponse response) throws Exception {
+                                 HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<String,Object> map=new HashMap<>();
@@ -199,7 +207,8 @@ public class UserController extends BaseController {
                 item.setFriendSex(0);
             }
         }
-        data.put("page", page);
+        data.put("applyList", page);
+        data.put("page",new RdPage(page));
         result.put("code", 200);
         result.put("msg", "查询成功");
         result.put("data", data);
@@ -217,6 +226,7 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/friendsOperation", method = RequestMethod.POST)
+    @ResponseBody
     public void friendsOperation(@RequestParam(value = "userId", required = true) Long userId,
                                  @RequestParam(value = "friendsListId", required = true) Long friendsListId,
                                  @RequestParam(value = "type", required = true) Integer type,
@@ -283,6 +293,7 @@ public class UserController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/getUserInfo", method = RequestMethod.POST)
+    @ResponseBody
     public void getUserInfo(@RequestParam(value = "userId", required = true) Long userId,
                             HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();

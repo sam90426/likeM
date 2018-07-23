@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -32,9 +33,10 @@ public class AccountController extends BaseController {
      * @param response
      */
     @RequestMapping(value = "/user/login", method = RequestMethod.POST)
+    @ResponseBody
     public void login(@RequestParam(value = "mobile", required = true) String mobile,
                       @RequestParam(value = "password", required = true) String password,
-                      HttpServletResponse response) throws Exception {
+                      HttpServletResponse response) {
         Map<String, Object> result = new HashMap<>();
         if (mobile.isEmpty() || password.isEmpty()) {
             result.put("code", 400);
@@ -71,6 +73,7 @@ public class AccountController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/user/register", method = RequestMethod.POST)
+    @ResponseBody
     public void register(@RequestParam(value = "mobile", required = true) String mobile,
                          @RequestParam(value = "password", required = true) String password,
                          HttpServletResponse response) throws Exception {
@@ -120,6 +123,7 @@ public class AccountController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/user/findpwd", method = RequestMethod.POST)
+    @ResponseBody
     public void findPwd(@RequestParam(value = "mobile", required = true) String mobile,
                         @RequestParam(value = "password", required = true) String password,
                         HttpServletResponse response) throws Exception {

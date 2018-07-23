@@ -50,7 +50,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
     @Override
     public Integer selectcount(T model) {
-        return null;
+        return getMapper().selectcount(model);
     }
 
     @Override

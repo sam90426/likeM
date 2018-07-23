@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -49,11 +50,11 @@ public class IndexController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/findIndex",method = RequestMethod.POST)
+    @ResponseBody
     public void findIndex(@RequestParam(value = "userId", required = true) Long userId,
                           @RequestParam(value = "label", required = true) String label,
-                          @RequestParam(value = "lastcircleId", required = true) Long lastcircleId,
                           @RequestParam(value = "pageindex", required = true) Integer pageindex,
-                          HttpServletResponse response) throws Exception {
+                          HttpServletResponse response)  {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         //首页轮播

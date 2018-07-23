@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -69,6 +70,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/friendApply", method = RequestMethod.POST)
+    @ResponseBody
     public void friendApply(@RequestParam(value = "userId", required = true) Long userId,
                             @RequestParam(value = "friendsId", required = true) Long friendsId,
                             HttpServletResponse response) throws Exception {
@@ -124,6 +126,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/circleDetail", method = RequestMethod.POST)
+    @ResponseBody
     public void circleDetail(@RequestParam(value = "circleId", required = true) Long circleId,
                              HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
@@ -160,6 +163,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/circleZan", method = RequestMethod.POST)
+    @ResponseBody
     public void circleZan(@RequestParam(value = "userId", required = true) Long userId,
                           @RequestParam(value = "circleId", required = true) Long circleId,
                           HttpServletResponse response) throws Exception {
@@ -207,6 +211,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/cancelCircleZan", method = RequestMethod.POST)
+    @ResponseBody
     public void cancelCircleZan(@RequestParam(value = "userId", required = true) Long userId,
                                 @RequestParam(value = "circleId", required = true) Long circleId,
                                 HttpServletResponse response) throws Exception {
@@ -246,6 +251,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/circleComment", method = RequestMethod.POST)
+    @ResponseBody
     public void circleComment(@RequestParam(value = "userId", required = true) Long userId,
                               @RequestParam(value = "circleId", required = true) Long circleId,
                               @RequestParam(value = "replyUserId", required = true) Long replyUserId,
@@ -300,6 +306,7 @@ public class CircleController extends BaseController {
      * @throws Exception
      */
     @RequestMapping(value = "/delCircleComment", method = RequestMethod.POST)
+    @ResponseBody
     public void delCircleComment(@RequestParam(value = "userId", required = true) Long userId,
                                  @RequestParam(value = "commentId", required = true) Long commentId,
                                  HttpServletResponse response) throws Exception {
