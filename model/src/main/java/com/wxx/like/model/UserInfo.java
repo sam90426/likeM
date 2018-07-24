@@ -93,9 +93,8 @@ import java.util.Date;
 
     /**
     * 设置主键Id
-    * 
-    * @param 要设置的主键Id
-    */
+    *
+     */
     public void setId(Long id){
         this.id = id;
     }

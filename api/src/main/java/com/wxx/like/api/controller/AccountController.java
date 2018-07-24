@@ -48,6 +48,12 @@ public class AccountController extends BaseController {
                 result.put("msg", "该账号未注册");
             } else {
                 if (password.equals(userInfo.getPassword())) {
+                    String logo=userInfo.getLogo();
+                    if (logo.contains(":/")) {
+                        logo = logo.replace("/", "\\");
+                    }
+                    logo="http://192.168.1.110:8055/readFile.htm?path="+logo;
+                    userInfo.setLogo(logo);
                     result.put("code", 200);
                     result.put("msg", "登陆成功");
                     result.put("data", userInfo);

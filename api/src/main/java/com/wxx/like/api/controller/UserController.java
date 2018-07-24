@@ -7,16 +7,21 @@ import com.wxx.like.model.UserInfo;
 import com.wxx.like.service.FriendsService;
 import com.wxx.like.service.UserInfoService;
 import com.wxx.like.api.common.ServletUtils;
+import com.wxx.like.utils.ConfigUtil;
 import com.wxx.like.utils.PageUtil;
 import com.wxx.like.utils.RdPage;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -106,6 +111,59 @@ public class UserController extends BaseController {
 
     //region 更换头像
 
+    /**
+     *
+     * @param userId
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updateLogo",method =RequestMethod.POST)
+    public void updateLogo(@RequestParam(value = "userId",required = true)Long userId,
+                           @RequestParam("image") MultipartFile multiFile,
+                           HttpServletResponse response)throws Exception{
+        Map<String,Object> result=new HashMap<>();
+
+        //获取服务器物理路径
+        String basedir= ConfigUtil.getInstance().getString("PicPath");
+        //路径
+        Calendar cal = Calendar.getInstance();
+        String path="/userLogo";
+        path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.HOUR_OF_DAY);
+        String dir = basedir + path;
+
+        File file = new File(dir);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        String filename = multiFile.getOriginalFilename();
+        //防止文件被覆盖，以纳秒生成文件
+        Long _l = System.nanoTime();
+        String _extfilename = filename.substring(filename.indexOf("."));
+        filename = _l + _extfilename;
+        try {
+            FileUtils.writeByteArrayToFile(new File(dir, filename), multiFile.getBytes());
+            Map data = new HashMap<String, Object>();
+            data.put("fileName", filename);
+            data.put("fileSize", multiFile.getSize() / 1024 / 1024);
+            String imgpath=basedir + path + "/" + filename;
+            UserInfo userInfo=userInfoService.findUserInfoByUserId(userId);
+            userInfo.setLogo(imgpath);
+            userInfoService.update(userInfo);
+            if (imgpath.contains(":/")) {
+                imgpath = imgpath.replace("/", "\\");
+            }
+            data.put("fileUrl",  "/readFile.htm?path="+imgpath);
+            result.put("data",data);
+            result.put("code", 200);
+            result.put("msg", "保存成功");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result.put("code", 400);
+            result.put("msg", "保存失败");
+        }
+        ServletUtils.writeToResponse(response,result);
+    }
     //endregion
 
     //region 修改密码
@@ -137,6 +195,76 @@ public class UserController extends BaseController {
             } else {
                 result.put("code", 400);
                 result.put("msg", "旧密码不正确");
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 更换邮箱
+
+    /**
+     *
+     * @param userId
+     * @param email
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updatEmail", method = RequestMethod.POST)
+    @ResponseBody
+    public void updatEmail(@RequestParam(value = "userId", required = true) Long userId,
+                               @RequestParam(value = "email", required = true) String email,
+                               HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (email.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "请输入邮箱地址");
+        } else {
+            UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+            if (userInfo == null) {
+                result.put("code", 400);
+                result.put("msg", "用户不存在");
+            } else {
+                userInfo.setEmail(email);
+                userInfoService.update(userInfo);
+                result.put("code", 200);
+                result.put("msg", "保存成功");
+            }
+        }
+
+        ServletUtils.writeToResponse(response, result);
+    }
+    //endregion
+
+    //region 更换手机号码
+
+    /**
+     *
+     * @param userId
+     * @param mobile
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/updateMobile", method = RequestMethod.POST)
+    @ResponseBody
+    public void updateMobile(@RequestParam(value = "userId", required = true) Long userId,
+                           @RequestParam(value = "mobile", required = true) String mobile,
+                           HttpServletResponse response) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        if (mobile.isEmpty()) {
+            result.put("code", 400);
+            result.put("msg", "请输入手机号码");
+        } else {
+            UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+            if (userInfo == null) {
+                result.put("code", 400);
+                result.put("msg", "用户不存在");
+            } else {
+                userInfo.setMobile(mobile);
+                userInfoService.update(userInfo);
+                result.put("code", 200);
+                result.put("msg", "保存成功");
             }
         }
 
