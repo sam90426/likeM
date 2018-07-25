@@ -160,7 +160,7 @@ public class CircleController extends BaseController {
                     data.put("fileName", filename);
                     data.put("fileSize", fileitem.getSize() / 1024 / 1024);
                     String imgpath=basedir + path + "/" + filename;
-                    imgPath=imgpath+","+imgpath;
+                    imgPath=","+imgpath;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -181,6 +181,8 @@ public class CircleController extends BaseController {
         circleInfo.setIsOut(isout);
         circleInfo.setLable(label);
         circleInfo.setPicUrl(imgPath);
+        circleInfo.setZanCount(0);
+        circleInfo.setCommentCount(0);
         circleInfo.setCreateTime(new Date());
         if(circleInfoService.save(circleInfo)){
             reslut.put("code",200);
