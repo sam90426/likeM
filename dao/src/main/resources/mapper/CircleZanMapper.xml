@@ -116,5 +116,9 @@
         from circle_zan
         <include refid="searchBy"/>
     </select>
+
+    <delete id="delete" parameterType="com.wxx.like.model.CircleZan">
+        DELETE FROM circle_zan WHERE id=#{id}
+    </delete>
     
 </mapper>

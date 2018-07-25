@@ -4,7 +4,10 @@ import com.github.pagehelper.Page;
 import com.wxx.like.api.common.ServletUtils;
 import com.wxx.like.model.*;
 import com.wxx.like.service.*;
+import com.wxx.like.utils.ConfigUtil;
 import com.wxx.like.utils.RdPage;
+import javafx.scene.chart.ValueAxis;
+import org.apache.commons.io.FileUtils;
 import org.omg.CORBA.DATA_CONVERSION;
 import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Controller;
@@ -12,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +60,33 @@ public class CircleController extends BaseController {
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Page<CircleInfo> page=circleInfoService.getFriendsPageList(userId,pageIndex,10);
+        if(page.getResult().size()>0){
+            for (CircleInfo item:page.getResult()) {
+                if (item.getLogo().contains(":/")) {
+                     item.setLogo("/readFile.htm?path="+item.getLogo().replace("/", "\\"));
+                }
+                if(!item.getPicUrl().isEmpty()){
+                    String[] pics=item.getPicUrl().split(",");
+                    String newPic="";
+                    if(pics.length>0){
+                        for(int i=0;i<pics.length;i++){
+                            if (pics[i].contains(":/")) {
+                                newPic=newPic+","+"/readFile.htm?path="+pics[i].replace("/", "\\");
+                            }
+                        }
+                        item.setPicUrl(newPic.substring(1));
+                    }
+                }
+                Map<String,Object> map=new HashMap<>();
+                map.put("circleId",item.getId());
+                item.setZanList(circleZanService.listSelective(map));
+                item.setCommentList(circleCommentService.listSelective(map));
+                CircleZan circleZan=new CircleZan();
+                circleZan.setCircleId(item.getId());
+                circleZan.setUserId(userId);
+                item.setZanCount(circleZanService.selectcount(circleZan)>0?1:2);
+            }
+        }
         Map<String,Object> data=new HashMap<>();
         data.put("friendsCircle",page);
         data.put("pageInfo",new RdPage(page));
@@ -65,11 +98,99 @@ public class CircleController extends BaseController {
     //endregion
 
     //region 上传动态图片
+    public void pushCircleImg()throws Exception{
 
+    }
     //endregion
 
     //region 发布动态
 
+    /**
+     *
+     * @param userId
+     * @param content
+     * @param label
+     * @param country
+     * @param isout
+     * @param multiFile
+     * @param response
+     * @throws Exception
+     */
+    @RequestMapping(value = "/sendCircle",method = RequestMethod.POST)
+    public void sendCircle(@RequestParam(value = "userId",required = true)Long userId,
+                           @RequestParam(value = "content",required = true)String content,
+                           @RequestParam(value = "label",required = true)String label,
+                           @RequestParam(value = "country",required = true)String country,
+                           @RequestParam(value = "isout",required = true)Integer isout,
+                           @RequestParam(value = "image")MultipartFile[] multiFile,
+                           HttpServletResponse response)throws Exception{
+        Map<String,Object> reslut=new HashMap<>();
+        if(content.isEmpty()){
+            reslut.put("code",400);
+            reslut.put("msg","请输入动态内容");
+            ServletUtils.writeToResponse(response,reslut);
+            return;
+        }
+        UserInfo userInfo=userInfoService.findUserInfoByUserId(userId);
+        String imgPath="";
+        if (multiFile != null && multiFile.length > 0) {
+            for (int i = 0; i < multiFile.length; i++) {
+                MultipartFile fileitem = multiFile[i];
+                //region 保存文件
+                //获取服务器物理路径
+                String basedir= ConfigUtil.getInstance().getString("PicPath");
+                //路径
+                Calendar cal = Calendar.getInstance();
+                String path="/circleImg";
+                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.HOUR_OF_DAY);
+                String dir = basedir + path;
+
+                File file = new File(dir);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                String filename = fileitem.getOriginalFilename();
+                //防止文件被覆盖，以纳秒生成文件
+                Long _l = System.nanoTime();
+                //String _extfilename = filename.substring(filename.indexOf("."));
+                filename = _l.toString()+".jpg";
+                try {
+                    FileUtils.writeByteArrayToFile(new File(dir, filename), fileitem.getBytes());
+                    Map data = new HashMap<String, Object>();
+                    data.put("fileName", filename);
+                    data.put("fileSize", fileitem.getSize() / 1024 / 1024);
+                    String imgpath=basedir + path + "/" + filename;
+                    imgPath=imgpath+","+imgpath;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //endregion
+
+            }
+            imgPath=imgPath.substring(1);
+        }
+
+        CircleInfo circleInfo=new CircleInfo();
+        circleInfo.setUserId(userInfo.getId());
+        circleInfo.setUserName(userInfo.getUserName());
+        circleInfo.setSex(userInfo.getSex());
+        circleInfo.setLeave(userInfo.getLevel());
+        circleInfo.setLogo(userInfo.getLogo());
+        circleInfo.setContent(content);
+        circleInfo.setCountry(country);
+        circleInfo.setIsOut(isout);
+        circleInfo.setLable(label);
+        circleInfo.setPicUrl(imgPath);
+        circleInfo.setCreateTime(new Date());
+        if(circleInfoService.save(circleInfo)){
+            reslut.put("code",200);
+            reslut.put("msg","发布成功");
+        }else {
+            reslut.put("code",400);
+            reslut.put("msg","发布失败");
+        }
+        ServletUtils.writeToResponse(response,reslut);
+    }
     //endregion
 
     //region 申请好友
@@ -219,6 +340,8 @@ public class CircleController extends BaseController {
                 circleZan.setCircleId(circleId);
                 circleZan.setCreateTime(new Date());
                 if (circleZanService.save(circleZan)) {
+                    circleInfo.setZanCount(+1);
+                    circleInfoService.update(circleInfo);
                     result.put("code", 200);
                     result.put("msg", "点赞成功");
                 } else {
@@ -254,6 +377,8 @@ public class CircleController extends BaseController {
             result.put("msg", "取消点赞失败");
         } else {
             if (circleZanService.delete(circleZan)) {
+                CircleInfo circleInfo=circleInfoService.findByPrimary(circleId);
+                circleInfo.setZanCount(circleInfo.getZanCount()>0?-1:0);
                 result.put("code", 200);
                 result.put("msg", "取消点赞成功");
             } else {
@@ -331,6 +456,8 @@ public class CircleController extends BaseController {
         circleComment.setComment(comment);
         circleComment.setCreateTime(new Date());
         if (circleCommentService.save(circleComment)) {
+            circleInfo.setCommentCount(+1);
+            circleInfoService.update(circleInfo);
             result.put("code", 200);
             result.put("msg", "评论成功");
         } else {
@@ -365,6 +492,9 @@ public class CircleController extends BaseController {
             result.put("msg", "评论不存在");
         } else {
             if (circleCommentService.delete(circleComment)) {
+                CircleInfo circleInfo=circleInfoService.findByPrimary(circleComment.getCircleId());
+                circleInfo.setCommentCount(circleInfo.getCommentCount()>0?-1:0);
+                circleInfoService.update(circleInfo);
                 result.put("code", 200);
                 result.put("msg", "删除成功");
             } else {

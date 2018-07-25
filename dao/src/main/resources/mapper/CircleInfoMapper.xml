@@ -177,7 +177,7 @@
         select
         <include refid="Base_Column_List" />
         from circle_info
-        where user_id = #{userId} AND user_id IN (
+        where user_id = #{userId} OR user_id IN (
         SELECT user_id FROM friends WHERE friend_user_id=#{userId}
         )
     </select>
