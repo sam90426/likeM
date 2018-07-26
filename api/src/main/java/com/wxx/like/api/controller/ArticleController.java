@@ -105,17 +105,15 @@ public class ArticleController extends BaseController {
                             @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                             HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        LikeArticle likeArticle = new LikeArticle();
-        likeArticle.setState(1);
         Map<String,Object> map=new HashMap<>();
         map.put("state",1);
         Page<LikeArticle> page = likeArticleService.getPageList(map, pageIndex, 10);
         if (page.getResult().size() > 0) {
-            likeArticle = new LikeArticle();
-            likeArticle.setUserId(userId);
+            LikeZan likeZan=new LikeZan();
+            likeZan.setUserId(userId);
             for (LikeArticle item : page.getResult()) {
-                likeArticle.setId(item.getId());
-                int count = likeArticleService.selectcount(likeArticle);
+                likeZan.setLikeId(item.getId());
+                int count = likeZanService.selectcount(likeZan);
                 if (count > 0) {
                     item.setZanCount(1);
                 } else {
@@ -369,7 +367,10 @@ public class ArticleController extends BaseController {
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-        LikeZan likeZan = likeZanService.findByPrimary(articleId);
+        Map<String,Object> map=new HashMap<>();
+        map.put("userId",userId);
+        map.put("articleId",articleId);
+        LikeZan likeZan=likeZanService.findSelective(map);
         if (likeZan == null) {
             result.put("code", 400);
             result.put("msg", "操作失败");

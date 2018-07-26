@@ -116,5 +116,9 @@
         from like_zan
         <include refid="searchBy"/>
     </select>
+
+    <delete id="delete" parameterType="com.wxx.like.model.LikeZan">
+        DELETE FROM like_zan WHERE id=#{id}
+    </delete>
     
 </mapper>
