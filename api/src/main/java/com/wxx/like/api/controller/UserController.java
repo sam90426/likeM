@@ -426,7 +426,12 @@ public class UserController extends BaseController {
                             HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
-
+        if(!userInfo.getLogo().isEmpty()) {
+            if (userInfo.getLogo().contains(":/")) {
+                userInfo.setLogo(userInfo.getLogo().replace("/", "\\"));
+            }
+            userInfo.setLogo("/readFile.htm?path=" +userInfo.getLogo());
+        }
         result.put("code", 200);
         result.put("msg", "查询成功");
         result.put("data", userInfo);

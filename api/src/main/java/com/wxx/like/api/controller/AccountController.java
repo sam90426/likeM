@@ -52,7 +52,7 @@ public class AccountController extends BaseController {
                     if (logo.contains(":/")) {
                         logo = logo.replace("/", "\\");
                     }
-                    logo="http://192.168.1.110:8055/readFile.htm?path="+logo;
+                    logo="/readFile.htm?path="+logo;
                     userInfo.setLogo(logo);
                     result.put("code", 200);
                     result.put("msg", "登陆成功");

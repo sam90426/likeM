@@ -65,7 +65,7 @@ public class IndexController extends BaseController {
         if (!label.isEmpty()) {
             map.put("label",label);
         }
-        Page<CircleInfo> page = circleInfoService.getPageList(map, pageindex, 5);
+        Page<CircleInfo> page = circleInfoService.getPageList(map, pageindex, 10);
         if (page.getResult().size() > 0) {
             for (CircleInfo item : page.getResult()) {
                 Friends friends = new Friends();
@@ -95,6 +95,21 @@ public class IndexController extends BaseController {
                 item.setCommentList(circleCommentService.listSelective(map));
                 circleZan = new CircleZan();
                 item.setZanList(circleZanService.listSelective(map));
+                if (item.getLogo().contains(":/")) {
+                    item.setLogo("/readFile.htm?path="+item.getLogo().replace("/", "\\"));
+                }
+                if(!item.getPicUrl().isEmpty()){
+                    String[] pics=item.getPicUrl().split(",");
+                    String newPic="";
+                    if(pics.length>0){
+                        for(int i=0;i<pics.length;i++){
+                            if (pics[i].contains(":/")) {
+                                newPic=newPic+","+"/readFile.htm?path="+pics[i].replace("/", "\\");
+                            }
+                        }
+                        item.setPicUrl(newPic.substring(1));
+                    }
+                }
             }
         }
         data.put("indexBanner", indexBanner);

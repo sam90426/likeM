@@ -164,6 +164,7 @@
         <include refid="Base_Column_List" />
         from circle_info
         <include refid="searchBy"/>
+        order BY id DESC
     </select>
 
     <select id="selectcount" resultType="java.lang.Integer" parameterType="com.wxx.like.model.CircleInfo">
@@ -180,6 +181,7 @@
         where user_id = #{userId} OR user_id IN (
         SELECT user_id FROM friends WHERE friend_user_id=#{userId}
         )
+        ORDER BY id DESC
     </select>
     
 </mapper>
