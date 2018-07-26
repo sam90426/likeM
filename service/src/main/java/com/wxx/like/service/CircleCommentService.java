@@ -9,4 +9,5 @@ import com.wxx.like.service.base.BaseService;
  */
 public interface CircleCommentService extends BaseService<CircleComment> {
 
+    Long insertBackId(CircleComment circleComment);
 }

@@ -29,4 +29,8 @@ public class CircleCommentServiceImpl extends BaseServiceImpl<CircleComment> imp
         return circleCommentMapper;
     }
 
+    @Override
+    public Long insertBackId(CircleComment circleComment) {
+        return circleCommentMapper.insertBackId(circleComment);
+    }
 }

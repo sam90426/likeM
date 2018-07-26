@@ -457,11 +457,14 @@ public class CircleController extends BaseController {
         }
         circleComment.setComment(comment);
         circleComment.setCreateTime(new Date());
-        if (circleCommentService.save(circleComment)) {
+        Long id=circleCommentService.insertBackId(circleComment);
+        if (id>0) {
+            circleComment.setId(id);
             circleInfo.setCommentCount(+1);
             circleInfoService.update(circleInfo);
             result.put("code", 200);
             result.put("msg", "评论成功");
+            result.put("data",circleComment);
         } else {
             result.put("code", 400);
             result.put("msg", "评论失败，请重试");

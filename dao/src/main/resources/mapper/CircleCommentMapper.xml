@@ -2,30 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- circle_comment表:动态评论表模块 -->
 <mapper namespace="com.wxx.like.dao.CircleCommentMapper">
-    <!--返回Map-->        
+    <!--返回Map-->
     <resultMap id="BaseResultMap" type="com.wxx.like.model.CircleComment">
-        <id column="id" property="id" jdbcType="BIGINT" />
-        <result column="user_id" property="userId" jdbcType="BIGINT" />
-        <result column="user_name" property="userName" jdbcType="VARCHAR" />
-        <result column="sex" property="sex" jdbcType="INTEGER" />
-        <result column="logo" property="logo" jdbcType="VARCHAR" />
-        <result column="circle_id" property="circleId" jdbcType="BIGINT" />
-        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-        <result column="reply_user_id" property="replyUserId" jdbcType="BIGINT" />
-        <result column="reply_user_name" property="replyUserName" jdbcType="VARCHAR" />
-        <result column="comment" property="comment" jdbcType="VARCHAR" />
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <result column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="INTEGER"/>
+        <result column="logo" property="logo" jdbcType="VARCHAR"/>
+        <result column="circle_id" property="circleId" jdbcType="BIGINT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="reply_user_id" property="replyUserId" jdbcType="BIGINT"/>
+        <result column="reply_user_name" property="replyUserName" jdbcType="VARCHAR"/>
+        <result column="comment" property="comment" jdbcType="VARCHAR"/>
     </resultMap>
-    
+
     <!--基本的sql查询字段 公共引用...-->
     <sql id="Base_Column_List">
         id,user_id,user_name,sex,logo,circle_id,create_time,reply_user_id,reply_user_name,comment 
     </sql>
-    
+
     <!-- 基本的sql查询条件公共引用 -->
     <sql id="searchBy">
         <trim prefix="where" prefixOverrides="and|or">
             <if test=" id != null and id != '' ">
-                id  = #{id,jdbcType=BIGINT}
+                id = #{id,jdbcType=BIGINT}
             </if>
             <if test="userId != null and userId != '' ">
                 and user_id = #{userId,jdbcType=BIGINT}
@@ -56,13 +56,13 @@
             </if>
         </trim>
     </sql>
-    
-    
+
+
     <insert id="save" parameterType="com.wxx.like.model.CircleComment">
         insert into circle_comment(user_id,user_name,sex,logo,circle_id,create_time,reply_user_id,reply_user_name,comment)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{circleId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP},#{replyUserId,jdbcType=BIGINT},#{replyUserName,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR})
     </insert>
 
-    
+
     <update id="update" parameterType="com.wxx.like.model.CircleComment">
         update circle_comment set 
             user_id = #{userId,jdbcType=BIGINT},
@@ -78,58 +78,58 @@
     </update>
 
 
-    <update id="updateSelective"  parameterType="java.util.HashMap">
+    <update id="updateSelective" parameterType="java.util.HashMap">
         update circle_comment
-          <set>
-            <if test="userId != null and userId != '' ">        
-                user_id = #{userId,jdbcType=BIGINT},                
+        <set>
+            <if test="userId != null and userId != '' ">
+                user_id = #{userId,jdbcType=BIGINT},
             </if>
-            <if test="userName != null and userName != '' ">        
-                user_name = #{userName,jdbcType=VARCHAR},                
+            <if test="userName != null and userName != '' ">
+                user_name = #{userName,jdbcType=VARCHAR},
             </if>
-            <if test="sex != null and sex != '' ">        
-                sex = #{sex,jdbcType=INTEGER},                
+            <if test="sex != null and sex != '' ">
+                sex = #{sex,jdbcType=INTEGER},
             </if>
-            <if test="logo != null and logo != '' ">        
-                logo = #{logo,jdbcType=VARCHAR},                
+            <if test="logo != null and logo != '' ">
+                logo = #{logo,jdbcType=VARCHAR},
             </if>
-            <if test="circleId != null and circleId != '' ">        
-                circle_id = #{circleId,jdbcType=BIGINT},                
+            <if test="circleId != null and circleId != '' ">
+                circle_id = #{circleId,jdbcType=BIGINT},
             </if>
             <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},                
+                create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="replyUserId != null and replyUserId != '' ">        
-                reply_user_id = #{replyUserId,jdbcType=BIGINT},                
+            <if test="replyUserId != null and replyUserId != '' ">
+                reply_user_id = #{replyUserId,jdbcType=BIGINT},
             </if>
-            <if test="replyUserName != null and replyUserName != '' ">        
-                reply_user_name = #{replyUserName,jdbcType=VARCHAR},                
+            <if test="replyUserName != null and replyUserName != '' ">
+                reply_user_name = #{replyUserName,jdbcType=VARCHAR},
             </if>
-            <if test="comment != null and comment != '' ">        
-                comment = #{comment,jdbcType=VARCHAR}                
+            <if test="comment != null and comment != '' ">
+                comment = #{comment,jdbcType=VARCHAR}
             </if>
-        </set>    
+        </set>
         where id = #{id ,jdbcType=INTEGER}
     </update>
 
 
     <select id="findByPrimary" resultMap="BaseResultMap" parameterType="java.lang.Long">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from circle_comment
         where id = #{id,jdbcType=INTEGER}
     </select>
 
-	<select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+    <select id="findSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from circle_comment
         <include refid="searchBy"/>
     </select>
-               
+
     <select id="listSelective" resultMap="BaseResultMap" parameterType="java.util.HashMap">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from circle_comment
         <include refid="searchBy"/>
     </select>
@@ -140,5 +140,9 @@
         from circle_comment
         <include refid="searchBy"/>
     </select>
+
+    <insert id="insertBackId" keyProperty="id" useGeneratedKeys="true" parameterType="com.wxx.like.model.CircleComment">
+        insert into circle_comment(user_id,user_name,sex,logo,circle_id,create_time,reply_user_id,reply_user_name,comment)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{circleId,jdbcType=BIGINT},#{createTime,jdbcType=TIMESTAMP},#{replyUserId,jdbcType=BIGINT},#{replyUserName,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR})
+    </insert>
 
 </mapper>
