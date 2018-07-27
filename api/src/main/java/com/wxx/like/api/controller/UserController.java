@@ -372,10 +372,10 @@ public class UserController extends BaseController {
                     if (friendsService.update(friends)) {
                         UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
                         Friends friends1 = new Friends();
-                        friends1.setUserId(friends.getFriendUserId());
-                        friends1.setUserName(friends.getFriendUserName());
-                        friends1.setFriendUserId(userInfo.getId());
-                        friends1.setFriendUserName(userInfo.getUserName());
+                        friends1.setUserId(userInfo.getId());
+                        friends1.setUserName(userInfo.getUserName());
+                        friends1.setFriendUserId(friends.getUserId());
+                        friends1.setFriendUserName(friends.getUserName());
                         friends1.setFriendSex(userInfo.getSex());
                         friends1.setState(2);
                         friends1.setCreateTime(new Date());
