@@ -221,17 +221,7 @@ public class CircleController extends BaseController {
         map.put("userId",userInfo.getId());
         map.put("friendUserId",friendInfo.getId());
         Friends friends = friendsService.findSelective(map);
-        if (friends.getState() == 1) {
-            result.put("code", 400);
-            result.put("msg", "已申请,等待通过");
-            ServletUtils.writeToResponse(response, result);
-            return;
-        } else if (friends.getState() == 2) {
-            result.put("code", 400);
-            result.put("msg", "已是好友");
-            ServletUtils.writeToResponse(response, result);
-            return;
-        } else {
+        if (friends == null) {
             friends = new Friends();
             friends.setUserId(userInfo.getId());
             friends.setUserName(userInfo.getUserName());
@@ -247,6 +237,16 @@ public class CircleController extends BaseController {
                 result.put("code", 400);
                 result.put("msg", "申请失败,请重试");
             }
+        }else if (friends.getState() == 1) {
+            result.put("code", 400);
+            result.put("msg", "已申请,等待通过");
+            ServletUtils.writeToResponse(response, result);
+            return;
+        } else if (friends.getState() == 2) {
+            result.put("code", 400);
+            result.put("msg", "已是好友");
+            ServletUtils.writeToResponse(response, result);
+            return;
         }
         ServletUtils.writeToResponse(response, result);
     }

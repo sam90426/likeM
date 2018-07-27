@@ -325,7 +325,7 @@ public class UserController extends BaseController {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         Map<String,Object> map=new HashMap<>();
-        map.put("userId",userId);
+        map.put("friendUserId",userId);
         map.put("state",1);
         Page<Friends> page = friendsService.getPageList(map, pageIndex, 10);
         if (page.getResult().size() > 0) {

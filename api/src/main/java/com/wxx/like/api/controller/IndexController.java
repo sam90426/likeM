@@ -69,8 +69,8 @@ public class IndexController extends BaseController {
         if (page.getResult().size() > 0) {
             for (CircleInfo item : page.getResult()) {
                 Friends friends = new Friends();
-                friends.setUserId(userId);
-                friends.setFriendUserId(item.getUserId());
+                friends.setUserId(item.getUserId());
+                friends.setFriendUserId(userId);
                 friends.setState(2);
                 int friend = friendsService.selectcount(friends);
                 CircleZan circleZan = new CircleZan();
