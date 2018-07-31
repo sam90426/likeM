@@ -222,6 +222,13 @@ public class CircleController extends BaseController {
         circleInfo.setZanCount(0);
         circleInfo.setCommentCount(0);
         circleInfo.setCreateTime(new Date());
+        if(multiFile != null && multiFile.length > 0){
+            circleInfo.setType(2);
+        }else if(multiFileByVideo != null && multiFileByVideo.length > 0){
+            circleInfo.setType(3);
+        }else{
+            circleInfo.setType(1);
+        }
         if(circleInfoService.save(circleInfo)){
             reslut.put("code",200);
             reslut.put("msg","发布成功");

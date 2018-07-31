@@ -82,6 +82,11 @@ import java.util.List;
     */
     private Date createTime;
 
+    /**
+     * 类型 1=纯文 2=有图 3=有视频
+     */
+    private Integer type;
+
     private List<CircleZan> zanList;
 
     private List<CircleComment> commentList;
@@ -353,5 +358,13 @@ import java.util.List;
 
     public void setCommentList(List<CircleComment> commentList) {
         this.commentList = commentList;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

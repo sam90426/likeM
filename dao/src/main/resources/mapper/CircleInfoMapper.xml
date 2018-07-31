@@ -18,11 +18,12 @@
         <result column="country" property="country" jdbcType="VARCHAR" />
         <result column="is_out" property="isOut" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="type" property="type" jdbcType="INTEGER" />
     </resultMap>
     
     <!--基本的sql查询字段 公共引用...-->
     <sql id="Base_Column_List">
-        id,user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time
+        id,user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time,type
     </sql>
     
     <!-- 基本的sql查询条件公共引用 -->
@@ -75,7 +76,7 @@
     
     
     <insert id="save" parameterType="com.wxx.like.model.CircleInfo">
-        insert into circle_info(user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{lable,jdbcType=VARCHAR},#{country,jdbcType=VARCHAR},#{isOut,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP})
+        insert into circle_info(user_id,user_name,sex,logo,`leave`,content,pic_url,zan_count,comment_count,lable,country,is_out,create_time,type)values(#{userId,jdbcType=BIGINT},#{userName,jdbcType=VARCHAR},#{sex,jdbcType=INTEGER},#{logo,jdbcType=VARCHAR},#{leave,jdbcType=INTEGER},#{content,jdbcType=VARCHAR},#{picUrl,jdbcType=VARCHAR},#{zanCount,jdbcType=INTEGER},#{commentCount,jdbcType=INTEGER},#{lable,jdbcType=VARCHAR},#{country,jdbcType=VARCHAR},#{isOut,jdbcType=INTEGER},#{createTime,jdbcType=TIMESTAMP},#{type,jdbcType=INTEGER})
     </insert>
 
     
