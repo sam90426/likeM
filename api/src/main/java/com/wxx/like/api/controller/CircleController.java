@@ -123,6 +123,7 @@ public class CircleController extends BaseController {
                            @RequestParam(value = "country",required = true)String country,
                            @RequestParam(value = "isout",required = true)Integer isout,
                            @RequestParam(value = "image")MultipartFile[] multiFile,
+                           @RequestParam(value = "video")MultipartFile[] multiFileByVideo,
                            HttpServletResponse response)throws Exception{
         Map<String,Object> reslut=new HashMap<>();
         if(content.isEmpty()){
@@ -154,6 +155,43 @@ public class CircleController extends BaseController {
                 Long _l = System.nanoTime();
                 //String _extfilename = filename.substring(filename.indexOf("."));
                 filename = _l.toString()+".jpg";
+                try {
+                    FileUtils.writeByteArrayToFile(new File(dir, filename), fileitem.getBytes());
+                    Map data = new HashMap<String, Object>();
+                    data.put("fileName", filename);
+                    data.put("fileSize", fileitem.getSize() / 1024 / 1024);
+                    String imgpath=basedir + path + "/" + filename;
+                    imgPath=","+imgpath;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //endregion
+
+            }
+            imgPath=imgPath.substring(1);
+        }
+
+        if (multiFileByVideo != null && multiFileByVideo.length > 0) {
+            for (int i = 0; i < multiFileByVideo.length; i++) {
+                MultipartFile fileitem = multiFileByVideo[i];
+                //region 保存文件
+                //获取服务器物理路径
+                String basedir= ConfigUtil.getInstance().getString("PicPath");
+                //路径
+                Calendar cal = Calendar.getInstance();
+                String path="/circleVideo";
+                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.HOUR_OF_DAY);
+                String dir = basedir + path;
+
+                File file = new File(dir);
+                if (!file.exists()) {
+                    file.mkdirs();
+                }
+                String filename = fileitem.getOriginalFilename();
+                //防止文件被覆盖，以纳秒生成文件
+                Long _l = System.nanoTime();
+                String _extfilename = filename.substring(filename.indexOf("."));
+                filename = _l.toString()+_extfilename;
                 try {
                     FileUtils.writeByteArrayToFile(new File(dir, filename), fileitem.getBytes());
                     Map data = new HashMap<String, Object>();
