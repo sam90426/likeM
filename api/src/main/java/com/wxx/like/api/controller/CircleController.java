@@ -6,16 +6,14 @@ import com.wxx.like.model.*;
 import com.wxx.like.service.*;
 import com.wxx.like.utils.ConfigUtil;
 import com.wxx.like.utils.RdPage;
-import javafx.scene.chart.ValueAxis;
 import org.apache.commons.io.FileUtils;
-import org.omg.CORBA.DATA_CONVERSION;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import tool.util.StringUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -54,51 +52,51 @@ public class CircleController extends BaseController {
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "/friendsCircle",method = RequestMethod.POST)
+    @RequestMapping(value = "/friendsCircle", method = RequestMethod.POST)
     public void friendsCircle(@RequestParam(value = "userId", required = true) Long userId,
                               @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                               HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        Page<CircleInfo> page=circleInfoService.getFriendsPageList(userId,pageIndex,10);
-        if(page.getResult().size()>0){
-            for (CircleInfo item:page.getResult()) {
+        Page<CircleInfo> page = circleInfoService.getFriendsPageList(userId, pageIndex, 10);
+        if (page.getResult().size() > 0) {
+            for (CircleInfo item : page.getResult()) {
                 if (item.getLogo().contains(":/")) {
-                     item.setLogo("/readFile.htm?path="+item.getLogo().replace("/", "\\"));
+                    item.setLogo("/readFile.htm?path=" + item.getLogo().replace("/", "\\"));
                 }
-                if(!item.getPicUrl().isEmpty()){
-                    String[] pics=item.getPicUrl().split(",");
-                    String newPic="";
-                    if(pics.length>0){
-                        for(int i=0;i<pics.length;i++){
+                if (!item.getPicUrl().isEmpty()) {
+                    String[] pics = item.getPicUrl().split(",");
+                    String newPic = "";
+                    if (pics.length > 0) {
+                        for (int i = 0; i < pics.length; i++) {
                             if (pics[i].contains(":/")) {
-                                newPic=newPic+","+"/readFile.htm?path="+pics[i].replace("/", "\\");
+                                newPic = newPic + "," + "/readFile.htm?path=" + pics[i].replace("/", "\\");
                             }
                         }
                         item.setPicUrl(newPic.substring(1));
                     }
                 }
-                Map<String,Object> map=new HashMap<>();
-                map.put("circleId",item.getId());
+                Map<String, Object> map = new HashMap<>();
+                map.put("circleId", item.getId());
                 item.setZanList(circleZanService.listSelective(map));
                 item.setCommentList(circleCommentService.listSelective(map));
-                CircleZan circleZan=new CircleZan();
+                CircleZan circleZan = new CircleZan();
                 circleZan.setCircleId(item.getId());
                 circleZan.setUserId(userId);
-                item.setZanCount(circleZanService.selectcount(circleZan)>0?1:2);
+                item.setZanCount(circleZanService.selectcount(circleZan) > 0 ? 1 : 2);
             }
         }
-        Map<String,Object> data=new HashMap<>();
-        data.put("friendsCircle",page);
-        data.put("pageInfo",new RdPage(page));
-        result.put("code",200);
-        result.put("msg","操作成功");
-        result.put("data",data);
+        Map<String, Object> data = new HashMap<>();
+        data.put("friendsCircle", page);
+        data.put("pageInfo", new RdPage(page));
+        result.put("code", 200);
+        result.put("msg", "操作成功");
+        result.put("data", data);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
 
     //region 上传动态图片
-    public void pushCircleImg()throws Exception{
+    public void pushCircleImg() throws Exception {
 
     }
     //endregion
@@ -106,7 +104,6 @@ public class CircleController extends BaseController {
     //region 发布动态
 
     /**
-     *
      * @param userId
      * @param content
      * @param label
@@ -116,34 +113,34 @@ public class CircleController extends BaseController {
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "/sendCircle",method = RequestMethod.POST)
-    public void sendCircle(@RequestParam(value = "userId",required = true)Long userId,
-                           @RequestParam(value = "content",required = true)String content,
-                           @RequestParam(value = "label",required = true)String label,
-                           @RequestParam(value = "country",required = true)String country,
-                           @RequestParam(value = "isout",required = true)Integer isout,
-                           @RequestParam(value = "image")MultipartFile[] multiFile,
-                           @RequestParam(value = "video")MultipartFile[] multiFileByVideo,
-                           HttpServletResponse response)throws Exception{
-        Map<String,Object> reslut=new HashMap<>();
-        if(content.isEmpty()){
-            reslut.put("code",400);
-            reslut.put("msg","请输入动态内容");
-            ServletUtils.writeToResponse(response,reslut);
+    @RequestMapping(value = "/sendCircle", method = RequestMethod.POST)
+    public void sendCircle(@RequestParam(value = "userId", required = true) Long userId,
+                           @RequestParam(value = "content", required = true) String content,
+                           @RequestParam(value = "label", required = true) String label,
+                           @RequestParam(value = "country", required = true) String country,
+                           @RequestParam(value = "isout", required = true) Integer isout,
+                           @RequestParam(value = "image") MultipartFile[] multiFile,
+                           @RequestParam(value = "video") MultipartFile[] multiFileByVideo,
+                           HttpServletResponse response) throws Exception {
+        Map<String, Object> reslut = new HashMap<>();
+        if (content.isEmpty()) {
+            reslut.put("code", 400);
+            reslut.put("msg", "请输入动态内容");
+            ServletUtils.writeToResponse(response, reslut);
             return;
         }
-        UserInfo userInfo=userInfoService.findUserInfoByUserId(userId);
-        String imgPath="";
+        UserInfo userInfo = userInfoService.findUserInfoByUserId(userId);
+        String imgPath = "";
         if (multiFile != null && multiFile.length > 0) {
             for (int i = 0; i < multiFile.length; i++) {
                 MultipartFile fileitem = multiFile[i];
                 //region 保存文件
                 //获取服务器物理路径
-                String basedir= ConfigUtil.getInstance().getString("PicPath");
+                String basedir = ConfigUtil.getInstance().getString("PicPath");
                 //路径
                 Calendar cal = Calendar.getInstance();
-                String path="/circleImg";
-                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.HOUR_OF_DAY);
+                String path = "/circleImg";
+                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.HOUR_OF_DAY);
                 String dir = basedir + path;
 
                 File file = new File(dir);
@@ -154,21 +151,20 @@ public class CircleController extends BaseController {
                 //防止文件被覆盖，以纳秒生成文件
                 Long _l = System.nanoTime();
                 //String _extfilename = filename.substring(filename.indexOf("."));
-                filename = _l.toString()+".jpg";
+                filename = _l.toString() + ".jpg";
                 try {
                     FileUtils.writeByteArrayToFile(new File(dir, filename), fileitem.getBytes());
                     Map data = new HashMap<String, Object>();
                     data.put("fileName", filename);
                     data.put("fileSize", fileitem.getSize() / 1024 / 1024);
-                    String imgpath=basedir + path + "/" + filename;
-                    imgPath=","+imgpath;
+                    String imgpath = basedir + path + "/" + filename;
+                    imgPath = "," + imgpath;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //endregion
 
             }
-            imgPath=imgPath.substring(1);
         }
 
         if (multiFileByVideo != null && multiFileByVideo.length > 0) {
@@ -176,11 +172,11 @@ public class CircleController extends BaseController {
                 MultipartFile fileitem = multiFileByVideo[i];
                 //region 保存文件
                 //获取服务器物理路径
-                String basedir= ConfigUtil.getInstance().getString("PicPath");
+                String basedir = ConfigUtil.getInstance().getString("PicPath");
                 //路径
                 Calendar cal = Calendar.getInstance();
-                String path="/circleVideo";
-                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH)+"/"+cal.get(Calendar.HOUR_OF_DAY);
+                String path = "/circleVideo";
+                path = path + "/" + cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1) + "/" + cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.HOUR_OF_DAY);
                 String dir = basedir + path;
 
                 File file = new File(dir);
@@ -191,24 +187,26 @@ public class CircleController extends BaseController {
                 //防止文件被覆盖，以纳秒生成文件
                 Long _l = System.nanoTime();
                 String _extfilename = filename.substring(filename.indexOf("."));
-                filename = _l.toString()+_extfilename;
+                filename = _l.toString() + _extfilename;
                 try {
                     FileUtils.writeByteArrayToFile(new File(dir, filename), fileitem.getBytes());
                     Map data = new HashMap<String, Object>();
                     data.put("fileName", filename);
                     data.put("fileSize", fileitem.getSize() / 1024 / 1024);
-                    String imgpath=basedir + path + "/" + filename;
-                    imgPath=","+imgpath;
+                    String imgpath = basedir + path + "/" + filename;
+                    imgPath = imgPath+"," + imgpath;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 //endregion
 
             }
-            imgPath=imgPath.substring(1);
+        }
+        if (StringUtil.isNotBlank(imgPath)) {
+            imgPath = imgPath.substring(1);
         }
 
-        CircleInfo circleInfo=new CircleInfo();
+        CircleInfo circleInfo = new CircleInfo();
         circleInfo.setUserId(userInfo.getId());
         circleInfo.setUserName(userInfo.getUserName());
         circleInfo.setSex(userInfo.getSex());
@@ -222,21 +220,21 @@ public class CircleController extends BaseController {
         circleInfo.setZanCount(0);
         circleInfo.setCommentCount(0);
         circleInfo.setCreateTime(new Date());
-        if(multiFile != null && multiFile.length > 0){
-            circleInfo.setType(2);
-        }else if(multiFileByVideo != null && multiFileByVideo.length > 0){
+        if (multiFileByVideo != null && multiFileByVideo.length > 0) {
             circleInfo.setType(3);
-        }else{
+        } else if (multiFile != null && multiFile.length > 0) {
+            circleInfo.setType(2);
+        } else {
             circleInfo.setType(1);
         }
-        if(circleInfoService.save(circleInfo)){
-            reslut.put("code",200);
-            reslut.put("msg","发布成功");
-        }else {
-            reslut.put("code",400);
-            reslut.put("msg","发布失败");
+        if (circleInfoService.save(circleInfo)) {
+            reslut.put("code", 200);
+            reslut.put("msg", "发布成功");
+        } else {
+            reslut.put("code", 400);
+            reslut.put("msg", "发布失败");
         }
-        ServletUtils.writeToResponse(response,reslut);
+        ServletUtils.writeToResponse(response, reslut);
     }
     //endregion
 
@@ -262,9 +260,9 @@ public class CircleController extends BaseController {
             ServletUtils.writeToResponse(response, result);
             return;
         }
-        Map<String,Object> map=new HashMap<>();
-        map.put("userId",userInfo.getId());
-        map.put("friendUserId",friendInfo.getId());
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userInfo.getId());
+        map.put("friendUserId", friendInfo.getId());
         Friends friends = friendsService.findSelective(map);
         if (friends == null) {
             friends = new Friends();
@@ -282,7 +280,7 @@ public class CircleController extends BaseController {
                 result.put("code", 400);
                 result.put("msg", "申请失败,请重试");
             }
-        }else if (friends.getState() == 1) {
+        } else if (friends.getState() == 1) {
             result.put("code", 400);
             result.put("msg", "已申请,等待通过");
             ServletUtils.writeToResponse(response, result);
@@ -325,28 +323,27 @@ public class CircleController extends BaseController {
     //region 点赞列表
 
     /**
-     *
      * @param userId
      * @param circleId
      * @param pageIndex
      * @param response
      * @throws Exception
      */
-    @RequestMapping(value = "/zanList",method = RequestMethod.POST)
+    @RequestMapping(value = "/zanList", method = RequestMethod.POST)
     public void zanList(@RequestParam(value = "userId", required = true) Long userId,
                         @RequestParam(value = "circleId", required = true) Long circleId,
                         @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
                         HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> map = new HashMap<>();
-        map.put("circleId",circleId);
-        Page<CircleZan> page=circleZanService.getPageList(map,pageIndex,10);
-        map=new HashMap<>();
-        map.put("zanList",page);
-        map.put("pageInfo",new RdPage(page));
-        result.put("code",200);
-        result.put("msg","查询成功");
-        result.put("data",map);
+        map.put("circleId", circleId);
+        Page<CircleZan> page = circleZanService.getPageList(map, pageIndex, 10);
+        map = new HashMap<>();
+        map.put("zanList", page);
+        map.put("pageInfo", new RdPage(page));
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -371,9 +368,9 @@ public class CircleController extends BaseController {
             result.put("code", 400);
             result.put("msg", "该动态不存在");
         } else {
-            Map<String,Object> map=new HashMap<>();
-            map.put("circleId",circleId);
-            map.put("userId",userId);
+            Map<String, Object> map = new HashMap<>();
+            map.put("circleId", circleId);
+            map.put("userId", userId);
             CircleZan circleZan = circleZanService.findSelective(map);
             if (circleZan != null) {
                 result.put("code", 400);
@@ -415,17 +412,17 @@ public class CircleController extends BaseController {
                                 @RequestParam(value = "circleId", required = true) Long circleId,
                                 HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        Map<String,Object> map=new HashMap<>();
-        map.put("circleId",circleId);
-        map.put("userId",userId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("circleId", circleId);
+        map.put("userId", userId);
         CircleZan circleZan = circleZanService.findSelective(map);
         if (circleZan == null) {
             result.put("code", 400);
             result.put("msg", "取消点赞失败");
         } else {
             if (circleZanService.delete(circleZan)) {
-                CircleInfo circleInfo=circleInfoService.findByPrimary(circleId);
-                circleInfo.setZanCount(circleInfo.getZanCount()>0?-1:0);
+                CircleInfo circleInfo = circleInfoService.findByPrimary(circleId);
+                circleInfo.setZanCount(circleInfo.getZanCount() > 0 ? -1 : 0);
                 result.put("code", 200);
                 result.put("msg", "取消点赞成功");
             } else {
@@ -438,21 +435,21 @@ public class CircleController extends BaseController {
     //endregion
 
     //region 评论列表
-    @RequestMapping(value = "/commentList",method = RequestMethod.POST)
+    @RequestMapping(value = "/commentList", method = RequestMethod.POST)
     public void commentList(@RequestParam(value = "userId", required = true) Long userId,
-                        @RequestParam(value = "circleId", required = true) Long circleId,
-                        @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
-                        HttpServletResponse response) throws Exception {
+                            @RequestParam(value = "circleId", required = true) Long circleId,
+                            @RequestParam(value = "pageIndex", required = true) Integer pageIndex,
+                            HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> map = new HashMap<>();
-        map.put("circleId",circleId);
-        Page<CircleComment> page=circleCommentService.getPageList(map,pageIndex,10);
-        map=new HashMap<>();
-        map.put("zanList",page);
-        map.put("pageInfo",new RdPage(page));
-        result.put("code",200);
-        result.put("msg","查询成功");
-        result.put("data",map);
+        map.put("circleId", circleId);
+        Page<CircleComment> page = circleCommentService.getPageList(map, pageIndex, 10);
+        map = new HashMap<>();
+        map.put("zanList", page);
+        map.put("pageInfo", new RdPage(page));
+        result.put("code", 200);
+        result.put("msg", "查询成功");
+        result.put("data", map);
         ServletUtils.writeToResponse(response, result);
     }
     //endregion
@@ -502,14 +499,14 @@ public class CircleController extends BaseController {
         }
         circleComment.setComment(comment);
         circleComment.setCreateTime(new Date());
-        Long id=circleCommentService.insertBackId(circleComment);
-        if (id>0) {
+        Long id = circleCommentService.insertBackId(circleComment);
+        if (id > 0) {
             circleComment.setId(id);
             circleInfo.setCommentCount(+1);
             circleInfoService.update(circleInfo);
             result.put("code", 200);
             result.put("msg", "评论成功");
-            result.put("data",circleComment);
+            result.put("data", circleComment);
         } else {
             result.put("code", 400);
             result.put("msg", "评论失败，请重试");
@@ -533,17 +530,17 @@ public class CircleController extends BaseController {
                                  @RequestParam(value = "commentId", required = true) Long commentId,
                                  HttpServletResponse response) throws Exception {
         Map<String, Object> result = new HashMap<>();
-        Map<String,Object> map=new HashMap<>();
-        map.put("userId",userId);
-        map.put("commentId",commentId);
+        Map<String, Object> map = new HashMap<>();
+        map.put("userId", userId);
+        map.put("commentId", commentId);
         CircleComment circleComment = circleCommentService.findSelective(map);
         if (circleComment == null) {
             result.put("code", 400);
             result.put("msg", "评论不存在");
         } else {
             if (circleCommentService.delete(circleComment)) {
-                CircleInfo circleInfo=circleInfoService.findByPrimary(circleComment.getCircleId());
-                circleInfo.setCommentCount(circleInfo.getCommentCount()>0?-1:0);
+                CircleInfo circleInfo = circleInfoService.findByPrimary(circleComment.getCircleId());
+                circleInfo.setCommentCount(circleInfo.getCommentCount() > 0 ? -1 : 0);
                 circleInfoService.update(circleInfo);
                 result.put("code", 200);
                 result.put("msg", "删除成功");
