@@ -76,6 +76,9 @@ public class ReadFileController extends BaseController {
 			}else if(url.toLowerCase().endsWith(".docx")){
 				isFile = true;
 				response.setContentType("application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+			}else if(url.toLowerCase().endsWith(".mp4")){
+				isFile = true;
+				response.setContentType("video/mpeg4; charset=utf-8");
 			}else {
 				return null;
 			}
