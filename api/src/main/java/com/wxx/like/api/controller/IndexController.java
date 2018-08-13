@@ -104,7 +104,11 @@ public class IndexController extends BaseController {
                     if(pics.length>0){
                         for(int i=0;i<pics.length;i++){
                             if (pics[i].contains(":/")) {
-                                newPic=newPic+","+"/readFile.htm?path="+pics[i].replace("/", "\\");
+                                if(pics.length==2&&item.getType()==3&&i==1){
+                                    newPic = newPic + "," + "/readVideo.htm?path=" + pics[i].replace("/", "\\");
+                                }else {
+                                    newPic = newPic + "," + "/readFile.htm?path=" + pics[i].replace("/", "\\");
+                                }
                             }
                         }
                         item.setPicUrl(newPic.substring(1));
