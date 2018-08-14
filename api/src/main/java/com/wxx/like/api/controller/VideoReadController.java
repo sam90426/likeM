@@ -38,14 +38,12 @@ public class VideoReadController extends BaseController {
                 fiStream = new FileInputStream(inFile);
             } catch (IOException e) {
                 logger.log(Level.INFO, strPath + " " + e.getMessage());
-
             }
             final long fileLen = fiStream.available();
             String range = request.getHeader("Range");
             response.setHeader("Accept-Ranges", "bytes");
             OutputStream out = response.getOutputStream();
             if (range == null) {
-
                 range = "bytes=0-";
             }
 
@@ -67,21 +65,14 @@ public class VideoReadController extends BaseController {
             fiStream.skip(start);
 
             try {
-
                 while ((length = fiStream.read(buffer)) != -1) {
                     out.write(buffer, 0, length);
-
                 }
-
             } catch (Exception e) {
-
                 logger.log(Level.INFO, e.toString());
             }
-
-
             fiStream.close();
             fiStream = null;
-
             out.close();
             out = null;
         } catch (Exception e) {
