@@ -119,6 +119,11 @@ public class ArticleController extends BaseController {
                 } else {
                     item.setZanCount(0);
                 }
+                if (item.getPicUrl().contains(":/")) {
+                    String newPic=item.getPicUrl();
+                    newPic = "/readFile.htm?path=" + newPic.replace("/", "\\");
+                    item.setPicUrl(newPic);
+                }
             }
         }
         map=new HashMap<>();
