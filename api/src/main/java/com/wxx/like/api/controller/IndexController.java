@@ -58,7 +58,17 @@ public class IndexController extends BaseController {
         Map<String, Object> result = new HashMap<>();
         Map<String, Object> data = new HashMap<>();
         //首页轮播
+        data.put("state",1);
         List<LikeArticle> indexBanner = likeArticleService.listSelective(data);
+        if(indexBanner.size()>0){
+            for(int i=0;i<indexBanner.size();i++){
+                String pic=indexBanner.get(i).getPicUrl();
+                if (pic.contains(":/")) {
+                    pic ="/readFile.htm?path=" + pic.replace("/", "\\");
+                    indexBanner.get(i).setPicUrl(pic);
+                }
+            }
+        }
         //首页动态
         Map<String,Object> map=new HashMap<>();
         map.put("isOut",1);
